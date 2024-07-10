@@ -9,7 +9,7 @@ import {
 // LOGED USER ONLY
 export const updateLoggedUserValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("fullName", "email", "phone", "activeAccount", "address"),
+  bodySanitizer("fullName", "email", "phone", "status", "address", "image"),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("fullName")
     .optional()
@@ -26,11 +26,11 @@ export const updateLoggedUserValidator = [
     .optional()
     .isMobilePhone(["ar-TN"])
     .withMessage("Invalid phone number only accepted TN Phone numbers"),
-  body("activeAccount")
+  body("status")
     .optional()
-    .withMessage("activeAccount is required")
-    .isBoolean()
-    .withMessage("activeAccount must be a boolean"),
+    .isIn(["active", "inactive"])
+    .withMessage("status must be active or inactive"),
+  body("image").optional().isString().withMessage("image must be a string"),
   body("address")
     .optional()
     .isObject()
@@ -120,8 +120,9 @@ export const createUserValidator = [
     "phone",
     "password",
     "confirmPassword",
-    "activeAccount",
-    "address"
+    "status",
+    "address",
+    "image"
   ),
   body("fullName")
     .notEmpty()
@@ -159,11 +160,11 @@ export const createUserValidator = [
   body("confirmPassword")
     .notEmpty()
     .withMessage("password confirmation required"),
-  body("activeAccount")
+  body("status")
     .notEmpty()
-    .withMessage("activeAccount is required")
-    .isBoolean()
-    .withMessage("activeAccount must be a boolean"),
+    .isIn(["active", "inactive"])
+    .withMessage("status must be active or inactive"),
+  body("image").optional().isString().withMessage("image must be a string"),
   body("address")
     .optional()
     .isObject()
@@ -190,7 +191,7 @@ export const createUserValidator = [
 ];
 export const updateUserValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("fullName", "email", "phone", "activeAccount", "address"),
+  bodySanitizer("fullName", "email", "phone", "status", "address", "image"),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("fullName")
     .optional()
@@ -207,11 +208,11 @@ export const updateUserValidator = [
     .optional()
     .isMobilePhone(["ar-TN"])
     .withMessage("Invalid phone number only accepted TN Phone numbers"),
-  body("activeAccount")
+  body("status")
     .optional()
-    .withMessage("activeAccount is required")
-    .isBoolean()
-    .withMessage("activeAccount must be a boolean"),
+    .isIn(["active", "inactive"])
+    .withMessage("status must be active or inactive"),
+  body("image").optional().isString().withMessage("image must be a string"),
   body("address")
     .optional()
     .isObject()

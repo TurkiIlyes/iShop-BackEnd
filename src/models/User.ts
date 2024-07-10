@@ -1,27 +1,28 @@
-import mongoose, { Schema,Document } from 'mongoose' ;
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface UserType extends Document {
-  _id: mongoose.Types.ObjectId,
-  fullName:string,
-  email: string,
-  phone: string,
-  password:string,
+  _id: mongoose.Types.ObjectId;
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  image: string;
   address?: {
-    details: string,
-    governorate: string,
-    city: string,
-    postalCode: string,
-  },
-  wishList?:  mongoose.Types.ObjectId[],
-  basketList?: mongoose.Types.ObjectId[],
-  role: 'user' | 'admin',
-  activeAccount:boolean,
-  signUpCode?: string,
-  signUpCodeExpires?: Date,
-  pwResetCode?: string,
-  pwResetExpires?: Date,
-  pwResetVerified?: boolean,
-  pwUpdatedAt:Date,
+    details: string;
+    governorate: string;
+    city: string;
+    postalCode: string;
+  };
+  wishList?: mongoose.Types.ObjectId[];
+  basketList?: mongoose.Types.ObjectId[];
+  role: "user" | "admin";
+  status: "active" | "inactive";
+  signUpCode?: string;
+  signUpCodeExpires?: Date;
+  pwResetCode?: string;
+  pwResetExpires?: Date;
+  pwResetVerified?: boolean;
+  pwUpdatedAt: Date;
 }
 
 const userSchema = new Schema<UserType>(
@@ -43,6 +44,7 @@ const userSchema = new Schema<UserType>(
       required: [true, "password required"],
       minlength: [8, "Too short password"],
     },
+    image: String,
     address: {
       details: String,
       governorate: String,
@@ -66,9 +68,10 @@ const userSchema = new Schema<UserType>(
       enum: ["user", "admin"],
       default: "user",
     },
-    activeAccount: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
     },
     signUpCode: String,
     signUpCodeExpires: Date,
@@ -82,6 +85,12 @@ const userSchema = new Schema<UserType>(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", function (next) {
+  // Image
+  this.image = this.image || "https://via.placeholder.com/150";
+  next();
+});
 
 const UserModel = mongoose.model<UserType>("user", userSchema);
 

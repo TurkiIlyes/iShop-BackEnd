@@ -5,7 +5,7 @@ import Product from "../models/Product";
 // @route   GET /api/v1/products
 // @access  Public
 export const getProducts = factory.getAll(Product);
-
+ 
 // @desc    Get specific product by id
 // @route   GET /api/v1/products/:id
 // @access  Public

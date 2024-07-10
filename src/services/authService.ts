@@ -17,10 +17,13 @@ import ApiError from "../utils/ApiError";
 
 export const signUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { fullName, email, password, phone } = req.body;
+    const { fullName, email, phone, password, address } = req.body;
 
     const checkUser = await User.findOne({ email });
-    if (checkUser && !checkUser.activeAccount) {
+    if (checkUser && checkUser.status === "active") {
+      return next(new ApiError("email already exist", 400));
+    }
+    if (checkUser && checkUser.status === "inactive") {
       await User.findOneAndDelete({ email });
     }
 
@@ -29,6 +32,7 @@ export const signUp = asyncHandler(
       email,
       phone,
       password: await bcrypt.hash(password, +process.env.BCRYPT_SALT),
+      address,
     });
 
     const signUpCode = Math.floor(Math.random() * 900000 + 100000).toString();
@@ -72,7 +76,7 @@ export const verifySignUp = asyncHandler(
     if (!user) {
       return next(new ApiError("code invalid or expired", 400));
     }
-    user.activeAccount = true;
+    user.status = "active";
     await user.save();
 
     const token = generateToken(user._id);
@@ -90,7 +94,7 @@ export const signIn = asyncHandler(
     if (
       !user ||
       !(await bcrypt.compare(password, user.password)) ||
-      !user.activeAccount
+      user.status === "inactive"
     ) {
       return next(new ApiError("Invalid email or password", 401));
     }
@@ -105,7 +109,7 @@ export const forgetPassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
-    if (!user || !user.activeAccount) {
+    if (!user || user.status === "inactive") {
       return next(new ApiError("There is no user with this email", 400));
     }
     const resetCode = Math.floor(Math.random() * 900000 + 100000).toString();

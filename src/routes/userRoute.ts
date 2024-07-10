@@ -1,5 +1,4 @@
 import express from "express";
-const router = express.Router();
 
 import { protect, allowedTo } from "../services/authService";
 import {
@@ -27,23 +26,44 @@ import {
 } from "../middlewares/uploadImage/uploadUserImage";
 import extractUserId from "../middlewares/extractUserId";
 
-// Protecting all routes below this middleware with authentication
+const router = express.Router();
+
+// Protect all routes below this middleware with authentication
 router.use(protect);
 
-// Routes for operations on logged-in user's by ID
-router.use("/me:id", extractUserId);
+// Routes for operations on the logged-in user by ID
+router.use("/me/:id", extractUserId);
 router
-  .route("/me:id")
+  .route("/me/:id")
+  /**
+   * @route   GET /me/:id
+   * @desc    Get the logged-in user
+   * @access  Private
+   */
   .get(getLoggedUserValidator, getUser)
+  /**
+   * @route   PUT /me/:id
+   * @desc    Update the logged-in user
+   * @access  Private
+   */
   .put(
     uploadUserImage,
     resizeProfilImage,
     updateLoggedUserValidator,
     updateUser
   )
+  /**
+   * @route   DELETE /me/:id
+   * @desc    Delete the logged-in user
+   * @access  Private
+   */
   .delete(deleteLoggedUserValidator, deleteUser);
 
-// Route for updating logged-in user's password
+/**
+ * @route   PUT /update-password
+ * @desc    Update the password of the logged-in user
+ * @access  Private
+ */
 router.put(
   "/update-password",
   updateLoggedUserPasswordValidator,
@@ -53,20 +73,47 @@ router.put(
 // Authorization middleware for admin-only routes
 router.use(allowedTo("admin"));
 
-// Routes for operations on all users
 router
   .route("/")
+  /**
+   * @route   GET /users
+   * @desc    Get all users
+   * @access  Private (admin only)
+   */
   .get(getUsers)
+  /**
+   * @route   POST /users
+   * @desc    Create a new user
+   * @access  Private (admin only)
+   */
   .post(uploadUserImage, resizeProfilImage, createUserValidator, createUser);
 
-// Routes for operations on a specific user by ID (admin operations)
 router
   .route("/:id")
+  /**
+   * @route   GET /users/:id
+   * @desc    Get a user by ID
+   * @access  Private (admin only)
+   */
   .get(getUserValidator, getUser)
+  /**
+   * @route   PUT /users/:id
+   * @desc    Update a user by ID
+   * @access  Private (admin only)
+   */
   .put(uploadUserImage, resizeProfilImage, updateUserValidator, updateUser)
+  /**
+   * @route   DELETE /users/:id
+   * @desc    Delete a user by ID
+   * @access  Private (admin only)
+   */
   .delete(deleteUserValidator, deleteUser);
 
-// Route for changing password by ID
+/**
+ * @route   PUT /users/changePassword/:id
+ * @desc    Update a user's password by ID
+ * @access  Private (admin only)
+ */
 router.put("/changePassword/:id", updatePasswordValidator, updateUser);
 
 export default router;

@@ -1,10 +1,27 @@
 import slugify from "slugify";
-import { check, body } from "express-validator";
+import { body, param } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import Category from "../../models/Category";
+import { bodySanitizer, paramsSanitizer } from "../../middlewares/sanitizer";
 
 export const createProductValidator = [
-  check("title")
+  bodySanitizer(
+    "title",
+    "description",
+    "price",
+    "discount",
+    "imageCover",
+    "images",
+    "quantity",
+    "colors",
+    "sizes",
+    "category",
+    "ratingsAverage",
+    "ratingsQuantity",
+    "status",
+    "sold"
+  ),
+  body("title")
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
     .notEmpty()
@@ -13,49 +30,81 @@ export const createProductValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-  check("description")
+  body("description")
     .notEmpty()
     .withMessage("Product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long description"),
-  check("quantity")
-    .notEmpty()
-    .withMessage("Product quantity is required")
-    .isNumeric()
-    .withMessage("Product quantity must be a number"),
-  check("sold")
-    .optional()
-    .isNumeric()
-    .withMessage("Product quantity must be a number"),
-  check("price")
+  body("price")
     .notEmpty()
     .withMessage("Product price is required")
     .isNumeric()
     .withMessage("Product price must be a number")
     .isLength({ max: 32 })
     .withMessage("To long price"),
-  check("priceAfterDiscount")
+  body("discount")
     .optional()
     .isNumeric()
-    .withMessage("Product priceAfterDiscount must be a number")
-    .toFloat()
-    .custom((value, { req }) => {
-      if (req.body.price <= value) {
-        throw new Error("priceAfterDiscount must be lower than price");
+    .withMessage("Product discount must be a number"),
+  body("imageCover")
+    .notEmpty()
+    .withMessage("Product imageCover is required")
+    .isString()
+    .withMessage("Product imageCover must be a string"),
+  body("images")
+    .optional()
+    .isArray()
+    .withMessage("images should be array of string")
+    .custom((images) => {
+      for (const image of images) {
+        if (typeof image !== "string") {
+          throw new Error("images must be an array of strings");
+        }
       }
       return true;
     }),
-
-  check("colors")
+  body("quantity")
+    .notEmpty()
+    .withMessage("Product quantity is required")
+    .isNumeric()
+    .withMessage("Product quantity must be a number"),
+  body("colors")
     .optional()
     .isArray()
-    .withMessage("availableColors should be array of string"),
-  check("imageCover").notEmpty().withMessage("Product imageCover is required"),
-  check("images")
+    .withMessage("available colors should be array of object")
+    .custom((colors) => {
+      for (const colorObj of colors) {
+        if (
+          typeof colorObj !== "object" ||
+          typeof colorObj.color !== "string" ||
+          typeof colorObj.quantity !== "number"
+        ) {
+          throw new Error(
+            "available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
+          );
+        }
+      }
+      return true;
+    }),
+  body("sizes")
     .optional()
     .isArray()
-    .withMessage("images should be array of string"),
-  check("category")
+    .withMessage("available sizes should be array of string")
+    .custom((sizes) => {
+      for (const sizeObj of sizes) {
+        if (
+          typeof sizeObj !== "object" ||
+          typeof sizeObj.size !== "string" ||
+          typeof sizeObj.quantity !== "number"
+        ) {
+          throw new Error(
+            "available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
+          );
+        }
+      }
+      return true;
+    }),
+  body("category")
     .notEmpty()
     .withMessage("Product must be belong to a category")
     .isMongoId()
@@ -69,9 +118,11 @@ export const createProductValidator = [
         }
       })
     ),
-
-  check("brand").optional().isMongoId().withMessage("Invalid ID formate"),
-  check("ratingsAverage")
+  body("sold")
+    .optional()
+    .isNumeric()
+    .withMessage("Product sold must be a number"),
+  body("ratingsAverage")
     .optional()
     .isNumeric()
     .withMessage("ratingsAverage must be a number")
@@ -79,31 +130,164 @@ export const createProductValidator = [
     .withMessage("Rating must be above or equal 1.0")
     .isLength({ max: 5 })
     .withMessage("Rating must be below or equal 5.0"),
-  check("ratingsQuantity")
+  body("ratingsQuantity")
     .optional()
     .isNumeric()
     .withMessage("ratingsQuantity must be a number"),
+  body("status")
+    .optional()
+    .isIn(["InStock", "OutOfStock", "Discontinued"])
+    .withMessage("status must be InStock, OutOfStock, or Discontinued"),
 
-  validatorMiddleware,
-];
-
-export const getProductValidator = [
-  check("id").isMongoId().withMessage("Invalid ID formate"),
   validatorMiddleware,
 ];
 
 export const updateProductValidator = [
-  check("id").isMongoId().withMessage("Invalid ID formate"),
+  bodySanitizer(
+    "title",
+    "description",
+    "price",
+    "discount",
+    "imageCover",
+    "images",
+    "quantity",
+    "colors",
+    "sizes",
+    "category",
+    "ratingsAverage",
+    "ratingsQuantity",
+    "status",
+    "sold"
+  ),
   body("title")
+    .isLength({ min: 3 })
+    .withMessage("must be at least 3 chars")
     .optional()
+    .withMessage("Product required")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
+  body("description")
+    .optional()
+    .withMessage("Product description is required")
+    .isLength({ max: 2000 })
+    .withMessage("Too long description"),
+  body("price")
+    .optional()
+    .withMessage("Product price is required")
+    .isNumeric()
+    .withMessage("Product price must be a number")
+    .isLength({ max: 32 })
+    .withMessage("To long price"),
+  body("discount")
+    .optional()
+    .isNumeric()
+    .withMessage("Product discount must be a number"),
+  body("imageCover")
+    .optional()
+    .withMessage("Product imageCover is required")
+    .isString()
+    .withMessage("Product imageCover must be a string"),
+  body("images")
+    .optional()
+    .isArray()
+    .withMessage("images should be array of string")
+    .custom((images) => {
+      for (const image of images) {
+        if (typeof image !== "string") {
+          throw new Error("images must be an array of strings");
+        }
+      }
+      return true;
+    }),
+  body("quantity")
+    .optional()
+    .withMessage("Product quantity is required")
+    .isNumeric()
+    .withMessage("Product quantity must be a number"),
+  body("colors")
+    .optional()
+    .isArray()
+    .withMessage("available colors should be array of object")
+    .custom((colors) => {
+      for (const colorObj of colors) {
+        if (
+          typeof colorObj !== "object" ||
+          typeof colorObj.color !== "string" ||
+          typeof colorObj.quantity !== "number"
+        ) {
+          throw new Error(
+            "available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
+          );
+        }
+      }
+      return true;
+    }),
+  body("sizes")
+    .optional()
+    .isArray()
+    .withMessage("available sizes should be array of string")
+    .custom((sizes) => {
+      for (const sizeObj of sizes) {
+        if (
+          typeof sizeObj !== "object" ||
+          typeof sizeObj.size !== "string" ||
+          typeof sizeObj.quantity !== "number"
+        ) {
+          throw new Error(
+            "available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
+          );
+        }
+      }
+      return true;
+    }),
+  body("category")
+    .optional()
+    .withMessage("Product must be belong to a category")
+    .isMongoId()
+    .withMessage("Invalid ID formate")
+    .custom((categoryId) =>
+      Category.findById(categoryId).then((category) => {
+        if (!category) {
+          return Promise.reject(
+            new Error(`No category for this id: ${categoryId}`)
+          );
+        }
+      })
+    ),
+  body("sold")
+    .optional()
+    .isNumeric()
+    .withMessage("Product sold must be a number"),
+  body("ratingsAverage")
+    .optional()
+    .isNumeric()
+    .withMessage("ratingsAverage must be a number")
+    .isLength({ min: 1 })
+    .withMessage("Rating must be above or equal 1.0")
+    .isLength({ max: 5 })
+    .withMessage("Rating must be below or equal 5.0"),
+  body("ratingsQuantity")
+    .optional()
+    .isNumeric()
+    .withMessage("ratingsQuantity must be a number"),
+  body("status")
+    .optional()
+    .isIn(["InStock", "OutOfStock", "Discontinued"])
+    .withMessage("status must be InStock, OutOfStock, or Discontinued"),
+
   validatorMiddleware,
 ];
 
 export const deleteProductValidator = [
-  check("id").isMongoId().withMessage("Invalid ID formate"),
+  paramsSanitizer("id"),
+  param("id").isMongoId().withMessage("Invalid ID formate"),
+  validatorMiddleware,
+];
+
+export const getProductValidator = [
+  paramsSanitizer("id"),
+  param("id").isMongoId().withMessage("Invalid ID formate"),
   validatorMiddleware,
 ];

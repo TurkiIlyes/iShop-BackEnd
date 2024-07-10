@@ -1,22 +1,24 @@
 import mongoose, { Schema, Document } from "mongoose";
+import slugify from "slugify";
 
 export interface ProductType extends Document {
   _id: mongoose.Types.ObjectId;
   title: string;
   slug: string;
   description: string;
-  quantity: number;
-  sold: number;
   price: number;
+  discount: number;
   priceAfterDiscount?: number;
-  colors?: string[];
   imageCover: string;
   images?: string[];
+  quantity: number;
+  colors?: { color: string; quantity: number }[];
+  sizes?: { size: string; quantity: number }[];
   category: mongoose.Types.ObjectId;
-  subcategories?: mongoose.Types.ObjectId[];
-  brand?: mongoose.Types.ObjectId;
+  sold: number;
   ratingsAverage?: number;
-  ratingsQuantity: number;
+  ratingsQuantity?: number;
+  status: "InStock" | "OutOfStock" | "Discontinued";
 }
 
 const productSchema = new Schema<ProductType>(
@@ -38,44 +40,48 @@ const productSchema = new Schema<ProductType>(
       required: [true, "Product description is required"],
       minlength: [20, "Too short product description"],
     },
-    quantity: {
-      type: Number,
-      required: [true, "Product quantity is required"],
-    },
-    sold: {
-      type: Number,
-      default: 0,
-    },
     price: {
       type: Number,
       required: [true, "Product price is required"],
       trim: true,
-      max: [200000, "Too long product price"],
+      min: [0, "Price cannot be negative"],
+      max: [200000, "Too high product price"],
+    },
+    discount: {
+      type: Number,
     },
     priceAfterDiscount: {
       type: Number,
     },
-    colors: [String],
-
     imageCover: {
       type: String,
       required: [true, "Product Image cover is required"],
     },
     images: [String],
+    quantity: {
+      type: Number,
+      required: [true, "Product quantity is required"],
+    },
+    colors: [
+      {
+        color: String,
+        quantity: Number,
+      },
+    ],
+    sizes: [
+      {
+        size: String,
+        quantity: Number,
+      },
+    ],
     category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
       required: [true, "Product must be belong to category"],
     },
-    subcategories: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "SubCategory",
-      },
-    ],
-    brand: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Brand",
+    sold: {
+      type: Number,
+      default: 0,
     },
     ratingsAverage: {
       type: Number,
@@ -86,9 +92,29 @@ const productSchema = new Schema<ProductType>(
       type: Number,
       default: 0,
     },
+    status: {
+      type: String,
+      enum: ["InStock", "OutOfStock", "Discontinued"],
+      default: "InStock",
+    },
   },
   { timestamps: true }
 );
+
+productSchema.pre("save", function (next) {
+  // Slug generation
+  this.slug = slugify(this.title, { lower: true });
+  // Price Calculation (if discount exists)
+  if (this.discount) {
+    this.priceAfterDiscount = parseFloat(
+      (this.price * (1 - this.discount / 100)).toFixed(2)
+    );
+  }
+  // Image Cover
+  this.imageCover = this.imageCover || "https://via.placeholder.com/150";
+
+  next();
+});
 
 const ProductModel = mongoose.model<ProductType>("product", productSchema);
 

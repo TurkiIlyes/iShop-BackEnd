@@ -1,20 +1,34 @@
-import { check } from "express-validator";
+import { body } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
+import { bodySanitizer } from "../../middlewares/sanitizer";
 
 export const signUpValidator = [
-  check("fullName")
+  bodySanitizer(
+    "fullName",
+    "email",
+    "phone",
+    "password",
+    "confirmPassword",
+    "address"
+  ),
+  body("fullName")
     .notEmpty()
-    .withMessage("fullName required")
+    .withMessage("fullName is required")
     .isLength({ min: 3 })
     .withMessage("Too short fullName")
     .isLength({ max: 20 })
     .withMessage("too long fullName"),
-  check("email")
+  body("email")
     .notEmpty()
-    .withMessage("Email required")
+    .withMessage("email is required")
     .isEmail()
     .withMessage("Invalid email address"),
-  check("password")
+  body("phone")
+    .notEmpty()
+    .withMessage("phone is required")
+    .isMobilePhone(["ar-TN"])
+    .withMessage("Invalid phone number only accepted TN Phone numbers"),
+  body("password")
     .notEmpty()
     .withMessage("Password is required")
     .matches(
@@ -25,32 +39,47 @@ export const signUpValidator = [
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
     )
     .custom((password, { req }) => {
-      if (password !== req.body.passwordConfirm) {
+      if (password !== req.body.confirmPassword) {
         throw new Error("Password Confirmation incorrect");
       }
       return true;
     }),
-
-  check("passwordConfirm")
+  body("confirmPassword")
     .notEmpty()
     .withMessage("password confirmation required"),
+  body("address")
+    .optional()
+    .isObject()
+    .withMessage("address must be an object")
+    .custom((address) => {
+      const { details, governorate, city, postalCode } = address;
+      if (typeof details !== "string") {
+        throw new Error("details must be a string");
+      }
+      if (typeof governorate !== "string") {
+        throw new Error("governorate must be a string");
+      }
+      if (typeof city !== "string") {
+        throw new Error("city must be a string");
+      }
+      if (typeof postalCode !== "string") {
+        throw new Error("postalCode must be a string");
+      }
 
-  check("phone")
-    .notEmpty()
-    .isMobilePhone(["ar-TN"])
-    .withMessage("Invalid phone number only accepted TN Phone numbers"),
-
+      return true;
+    }),
   validatorMiddleware,
 ];
 
 export const verifySignUpValidator = [
-  check("email")
+  bodySanitizer("email", "signUpCode"),
+  body("email")
     .notEmpty()
     .withMessage("Email required")
     .isEmail()
     .withMessage("Invalid email address"),
 
-  check("signUpCode")
+  body("signUpCode")
     .notEmpty()
     .withMessage("Sign-up code required")
     .isNumeric()
@@ -62,15 +91,16 @@ export const verifySignUpValidator = [
 ];
 
 export const signInValidator = [
-  check("email")
+  bodySanitizer("email", "password"),
+  body("email")
     .notEmpty()
     .withMessage("Email required")
     .isEmail()
     .withMessage("Invalid email address"),
 
-  check("password")
+  body("password")
     .notEmpty()
-    .withMessage("Password is required")
+    .withMessage("Password required")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
       "i"
@@ -82,7 +112,8 @@ export const signInValidator = [
 ];
 
 export const forgetPasswordValidator = [
-  check("email")
+  bodySanitizer("email"),
+  body("email")
     .notEmpty()
     .withMessage("Email required")
     .isEmail()
@@ -91,13 +122,14 @@ export const forgetPasswordValidator = [
 ];
 
 export const verifyPwResetCodeValidator = [
-  check("email")
+  bodySanitizer("email", "resetCode"),
+  body("email")
     .notEmpty()
     .withMessage("Email required")
     .isEmail()
     .withMessage("Invalid email address"),
 
-  check("resetCode")
+  body("resetCode")
     .notEmpty()
     .withMessage("reset code required")
     .isNumeric()
@@ -109,13 +141,14 @@ export const verifyPwResetCodeValidator = [
 ];
 
 export const resetPasswordValidator = [
-  check("email")
+  bodySanitizer("email", "password", "passwordConfirm"),
+  body("email")
     .notEmpty()
     .withMessage("Email required")
     .isEmail()
     .withMessage("Invalid email address"),
 
-  check("password")
+  body("password")
     .notEmpty()
     .withMessage("Password is required")
     .matches(
@@ -132,7 +165,7 @@ export const resetPasswordValidator = [
       return true;
     }),
 
-  check("passwordConfirm")
+  body("passwordConfirm")
     .notEmpty()
     .withMessage("password confirmation required"),
   validatorMiddleware,
