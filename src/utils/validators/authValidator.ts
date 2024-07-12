@@ -91,7 +91,7 @@ export const verifySignUpValidator = [
 ];
 
 export const providerSignInValidator = [
-  bodySanitizer("provider", "providerId"),
+  bodySanitizer("provider", "providerId", "email", "fullName", "image"),
   body("provider").notEmpty().withMessage("Provider is required"),
 
   body("providerId").notEmpty().withMessage("Provider ID is required"),
@@ -101,8 +101,7 @@ export const providerSignInValidator = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email address"),
-
-  body("name").notEmpty().withMessage("Name is required"),
+  body("fullName").notEmpty().withMessage("fullName is required"),
 
   body("image").optional().isString().withMessage("Image must be a string"),
   validatorMiddleware,

@@ -88,9 +88,9 @@ export const verifySignUp = asyncHandler(
 
 export const providerSignIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { provider, providerId, name, image } = req.body;
+    const { provider, providerId, email, fullName, image } = req.body;
 
-    let user = await User.findOne({ provider, providerId });
+    let user = await User.findOne({ provider, providerId, email });
 
     let status = 201;
 
@@ -98,7 +98,8 @@ export const providerSignIn = asyncHandler(
       user = await User.create({
         provider,
         providerId,
-        name,
+        email,
+        fullName,
         image,
         status: "active",
       });
