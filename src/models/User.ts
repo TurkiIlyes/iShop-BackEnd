@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface UserType extends Document {
   _id: mongoose.Types.ObjectId;
   fullName: string;
-  email?: string;
+  email: string;
   phone?: string;
   password?: string;
   provider?: string;
@@ -43,7 +43,6 @@ const userSchema = new Schema<UserType>(
     phone: String,
     password: {
       type: String,
-      required: [true, "password required"],
       minlength: [8, "Too short password"],
     },
     provider: String,
