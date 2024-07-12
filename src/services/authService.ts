@@ -90,12 +90,21 @@ export const providerSignIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { provider, providerId, email, name, image } = req.body;
 
-    let user = await User.findOne({ provider, providerId, email });
-
-    let status = 201;
-
-    if (!user) {
-      user = await User.create({
+    const emailUser = await User.findOne({ email });
+    let providerUser = await User.findOne({
+      provider,
+      providerId,
+      email,
+    });
+    if (emailUser && !providerUser && emailUser.status === "active") {
+      return next(new ApiError("email already exist", 400));
+    }
+    if (emailUser && !providerUser && emailUser.status === "inactive") {
+      await User.findOneAndDelete({ email });
+    }
+    let status = 200;
+    if (!providerUser) {
+      providerUser = await User.create({
         provider,
         providerId,
         email,
@@ -104,11 +113,11 @@ export const providerSignIn = asyncHandler(
         status: "active",
       });
 
-      status = 200;
+      status = 201;
     }
 
-    const token = generateToken(user._id);
-    const userObject = user.toObject();
+    const token = generateToken(providerUser._id);
+    const userObject = providerUser.toObject();
     delete userObject.password;
     res.status(status).json({ data: userObject, token });
   }
@@ -154,9 +163,7 @@ export const forgetPassword = asyncHandler(
     await user.save();
 
     try {
-      await sendEmail(
-        resetCodeEmailTemplate(user.name, user.email, resetCode)
-      );
+      await sendEmail(resetCodeEmailTemplate(user.name, user.email, resetCode));
     } catch (err) {
       user.pwResetCode = undefined;
       user.pwResetExpires = undefined;
