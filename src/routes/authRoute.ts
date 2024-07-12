@@ -20,8 +20,6 @@ import {
   verifySignUpValidator,
   providerSignInValidator,
 } from "../utils/validators/authValidator";
-import { resizeProfilImage, uploadUserImage } from "../middlewares/uploadImage/uploadUserImage";
-
 // Rate limiter middleware to prevent brute-force attacks
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -29,13 +27,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
 
-router.post(
-  "/provider-sign-in",
-  uploadUserImage,
-  resizeProfilImage,
-  providerSignInValidator,
-  providerSignIn
-);
+router.post("/provider-sign-in", providerSignInValidator, providerSignIn);
 
 router.use(limiter);
 /**
