@@ -86,7 +86,7 @@ router
    * @desc    Create a new user
    * @access  Private (admin only)
    */
-  .post(uploadUserImage, resizeProfilImage, createUserValidator, createUser);
+  .post(uploadUserImage, resizeProfilImage,createUserValidator, createUser);
 
 router
   .route("/:id")

@@ -17,11 +17,7 @@ export const updateLoggedUserValidator = [
     .withMessage("Too short fullName")
     .isLength({ max: 20 })
     .withMessage("too long fullName"),
-  body("email")
-    .optional()
-    .withMessage("email is required")
-    .isEmail()
-    .withMessage("Invalid email address"),
+  body("email").optional().isEmail().withMessage("Invalid email address"),
   body("phone")
     .optional()
     .isMobilePhone(["ar-TN"])
@@ -186,7 +182,6 @@ export const createUserValidator = [
 
       return true;
     }),
-  ,
   validatorMiddleware,
 ];
 export const updateUserValidator = [
@@ -199,11 +194,7 @@ export const updateUserValidator = [
     .withMessage("Too short fullName")
     .isLength({ max: 20 })
     .withMessage("too long fullName"),
-  body("email")
-    .optional()
-    .withMessage("email is required")
-    .isEmail()
-    .withMessage("Invalid email address"),
+  body("email").optional().isEmail().withMessage("Invalid email address"),
   body("phone")
     .optional()
     .isMobilePhone(["ar-TN"])
