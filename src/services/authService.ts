@@ -17,7 +17,7 @@ import ApiError from "../utils/ApiError";
 
 export const signUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { fullName, email, phone, password, address } = req.body;
+    const { name, email, phone, password, address } = req.body;
 
     const checkUser = await User.findOne({ email });
     if (checkUser && checkUser.status === "active") {
@@ -28,7 +28,7 @@ export const signUp = asyncHandler(
     }
 
     const user = await User.create({
-      fullName,
+      name,
       email,
       phone,
       password: await bcrypt.hash(password, +process.env.BCRYPT_SALT),
@@ -48,7 +48,7 @@ export const signUp = asyncHandler(
     await user.save();
     try {
       await sendEmail(
-        signUpCodeEmailTemplate(user.fullName, user.email, signUpCode)
+        signUpCodeEmailTemplate(user.name, user.email, signUpCode)
       );
     } catch (err) {
       user.signUpCode = undefined;
@@ -88,7 +88,7 @@ export const verifySignUp = asyncHandler(
 
 export const providerSignIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { provider, providerId, email, fullName, image } = req.body;
+    const { provider, providerId, email, name, image } = req.body;
 
     let user = await User.findOne({ provider, providerId, email });
 
@@ -99,7 +99,7 @@ export const providerSignIn = asyncHandler(
         provider,
         providerId,
         email,
-        fullName,
+        name,
         image,
         status: "active",
       });
@@ -155,7 +155,7 @@ export const forgetPassword = asyncHandler(
 
     try {
       await sendEmail(
-        resetCodeEmailTemplate(user.fullName, user.email, resetCode)
+        resetCodeEmailTemplate(user.name, user.email, resetCode)
       );
     } catch (err) {
       user.pwResetCode = undefined;

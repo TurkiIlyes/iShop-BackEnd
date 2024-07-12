@@ -9,14 +9,14 @@ import {
 // LOGED USER ONLY
 export const updateLoggedUserValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("fullName", "email", "phone", "status", "address", "image"),
+  bodySanitizer("name", "email", "phone", "status", "address", "image"),
   param("id").isMongoId().withMessage("Invalid User id format"),
-  body("fullName")
+  body("name")
     .optional()
     .isLength({ min: 3 })
-    .withMessage("Too short fullName")
+    .withMessage("Too short name")
     .isLength({ max: 20 })
-    .withMessage("too long fullName"),
+    .withMessage("too long name"),
   body("email").optional().isEmail().withMessage("Invalid email address"),
   body("phone")
     .optional()
@@ -111,7 +111,7 @@ export const getLoggedUserValidator = [
 // ADMIN ONLY
 export const createUserValidator = [
   bodySanitizer(
-    "fullName",
+    "name",
     "email",
     "phone",
     "password",
@@ -120,13 +120,13 @@ export const createUserValidator = [
     "address",
     "image"
   ),
-  body("fullName")
+  body("name")
     .notEmpty()
-    .withMessage("fullName is required")
+    .withMessage("name is required")
     .isLength({ min: 3 })
-    .withMessage("Too short fullName")
+    .withMessage("Too short name")
     .isLength({ max: 20 })
-    .withMessage("too long fullName"),
+    .withMessage("too long name"),
   body("email")
     .notEmpty()
     .withMessage("email is required")
@@ -186,14 +186,14 @@ export const createUserValidator = [
 ];
 export const updateUserValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("fullName", "email", "phone", "status", "address", "image"),
+  bodySanitizer("name", "email", "phone", "status", "address", "image"),
   param("id").isMongoId().withMessage("Invalid User id format"),
-  body("fullName")
+  body("name")
     .optional()
     .isLength({ min: 3 })
-    .withMessage("Too short fullName")
+    .withMessage("Too short name")
     .isLength({ max: 20 })
-    .withMessage("too long fullName"),
+    .withMessage("too long name"),
   body("email").optional().isEmail().withMessage("Invalid email address"),
   body("phone")
     .optional()

@@ -4,20 +4,20 @@ import { bodySanitizer } from "../../middlewares/sanitizer";
 
 export const signUpValidator = [
   bodySanitizer(
-    "fullName",
+    "name",
     "email",
     "phone",
     "password",
     "confirmPassword",
     "address"
   ),
-  body("fullName")
+  body("name")
     .notEmpty()
-    .withMessage("fullName is required")
+    .withMessage("name is required")
     .isLength({ min: 3 })
-    .withMessage("Too short fullName")
+    .withMessage("Too short name")
     .isLength({ max: 20 })
-    .withMessage("too long fullName"),
+    .withMessage("too long name"),
   body("email")
     .notEmpty()
     .withMessage("email is required")
@@ -91,7 +91,7 @@ export const verifySignUpValidator = [
 ];
 
 export const providerSignInValidator = [
-  bodySanitizer("provider", "providerId", "email", "fullName", "image"),
+  bodySanitizer("provider", "providerId", "email", "name", "image"),
   body("provider").notEmpty().withMessage("Provider is required"),
 
   body("providerId").notEmpty().withMessage("Provider ID is required"),
@@ -101,7 +101,7 @@ export const providerSignInValidator = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email address"),
-  body("fullName").notEmpty().withMessage("fullName is required"),
+  body("name").notEmpty().withMessage("name is required"),
 
   body("image").optional().isString().withMessage("Image must be a string"),
   validatorMiddleware,
