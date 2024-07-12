@@ -19,6 +19,8 @@ dbConnect();
 app.use(cors());
 app.options("*", cors());
 
+app.set("trust proxy", 1);
+
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
