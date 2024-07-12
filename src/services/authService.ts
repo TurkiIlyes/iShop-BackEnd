@@ -86,6 +86,33 @@ export const verifySignUp = asyncHandler(
   }
 );
 
+export const providerSignIn = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { provider, providerId, name, image } = req.body;
+
+    let user = await User.findOne({ provider, providerId });
+
+    let status = 201;
+
+    if (!user) {
+      user = await User.create({
+        provider,
+        providerId,
+        name,
+        image,
+        status: "active",
+      });
+
+      status = 200;
+    }
+
+    const token = generateToken(user._id);
+    const userObject = user.toObject();
+    delete userObject.password;
+    res.status(status).json({ data: userObject, token });
+  }
+);
+
 export const signIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;

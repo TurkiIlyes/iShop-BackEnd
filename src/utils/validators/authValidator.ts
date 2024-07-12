@@ -90,6 +90,24 @@ export const verifySignUpValidator = [
   validatorMiddleware,
 ];
 
+export const providerSignInValidator = [
+  bodySanitizer("provider", "providerId"),
+  body("provider").notEmpty().withMessage("Provider is required"),
+
+  body("providerId").notEmpty().withMessage("Provider ID is required"),
+
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email address"),
+
+  body("name").notEmpty().withMessage("Name is required"),
+
+  body("image").optional().isString().withMessage("Image must be a string"),
+  validatorMiddleware,
+];
+
 export const signInValidator = [
   bodySanitizer("email", "password"),
   body("email")

@@ -4,6 +4,7 @@ const router = express.Router();
 
 import {
   signUp,
+  providerSignIn,
   signIn,
   forgetPassword,
   resetPassword,
@@ -17,6 +18,7 @@ import {
   verifyPwResetCodeValidator,
   resetPasswordValidator,
   verifySignUpValidator,
+  providerSignInValidator,
 } from "../utils/validators/authValidator";
 
 // Rate limiter middleware to prevent brute-force attacks
@@ -25,6 +27,8 @@ const limiter = rateLimit({
   max: 20, // limit each IP to 100 requests per windowMs
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
+
+router.post("/provider-sign-in", providerSignInValidator, providerSignIn);
 
 router.use(limiter);
 /**

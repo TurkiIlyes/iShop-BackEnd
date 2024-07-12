@@ -22,7 +22,14 @@ app.options("*", cors());
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
-app.use("/auth", authRoute);
+app.use(
+  "/auth",
+  (req, res, next) => {
+    console.log(req.body);
+    next();
+  },
+  authRoute
+);
 app.use("/users", userRoute);
 app.use("*", (req, res, next) => {
   next(new ApiError("Can't find this route ", 404));
