@@ -25,7 +25,6 @@ export const updateCategoryValidator = [
   param("id").isMongoId().withMessage("Invalid category id format"),
   body("name")
     .optional()
-    .withMessage("Category required")
     .isLength({ min: 3 })
     .withMessage("Too short category name")
     .isLength({ max: 32 })

@@ -10,6 +10,9 @@ import ApiError from "./utils/ApiError";
 
 import authRoute from "./routes/authRoute";
 import userRoute from "./routes/userRoute";
+import categoryRoute from "./routes/categoryRoute";
+import productRoute from "./routes/productRoute";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
@@ -21,7 +24,7 @@ app.options("*", cors());
 
 app.set("trust proxy", 1);
 
-app.use(express.json({ limit: "20kb" }));
+app.use(express.json({ limit: "500kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
 app.use(
@@ -33,6 +36,9 @@ app.use(
   authRoute
 );
 app.use("/users", userRoute);
+app.use("/categories", categoryRoute);
+app.use("/products", categoryRoute);
+
 app.use("*", (req, res, next) => {
   next(new ApiError("Can't find this route ", 404));
 });

@@ -66,7 +66,6 @@ export const createProductValidator = [
     }),
   body("sku")
     .optional()
-    .withMessage("Product sku is required")
     .isString()
     .withMessage("Product sku must be a string"),
   body("quantity")
@@ -170,19 +169,16 @@ export const updateProductValidator = [
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
     .optional()
-    .withMessage("Product required")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
   body("description")
     .optional()
-    .withMessage("Product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long description"),
   body("price")
     .optional()
-    .withMessage("Product price is required")
     .isNumeric()
     .withMessage("Product price must be a number")
     .isLength({ max: 32 })
@@ -193,7 +189,6 @@ export const updateProductValidator = [
     .withMessage("Product discount must be a number"),
   body("imageCover")
     .optional()
-    .withMessage("Product imageCover is required")
     .isString()
     .withMessage("Product imageCover must be a string"),
   body("images")
@@ -210,12 +205,10 @@ export const updateProductValidator = [
     }),
   body("sku")
     .optional()
-    .withMessage("Product sku is required")
     .isString()
     .withMessage("Product sku must be a string"),
   body("quantity")
     .optional()
-    .withMessage("Product quantity is required")
     .isNumeric()
     .withMessage("Product quantity must be a number"),
   body("colors")
@@ -256,7 +249,6 @@ export const updateProductValidator = [
     }),
   body("category")
     .optional()
-    .withMessage("Product must be belong to a category")
     .isMongoId()
     .withMessage("Invalid ID formate")
     .custom((categoryId) =>
