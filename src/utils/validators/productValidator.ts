@@ -12,6 +12,7 @@ export const createProductValidator = [
     "discount",
     "imageCover",
     "images",
+    "sku",
     "quantity",
     "colors",
     "sizes",
@@ -63,6 +64,11 @@ export const createProductValidator = [
       }
       return true;
     }),
+  body("sku")
+    .optional()
+    .withMessage("Product sku is required")
+    .isString()
+    .withMessage("Product sku must be a string"),
   body("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -150,6 +156,7 @@ export const updateProductValidator = [
     "discount",
     "imageCover",
     "images",
+    "sku",
     "quantity",
     "colors",
     "sizes",
@@ -201,6 +208,11 @@ export const updateProductValidator = [
       }
       return true;
     }),
+  body("sku")
+    .optional()
+    .withMessage("Product sku is required")
+    .isString()
+    .withMessage("Product sku must be a string"),
   body("quantity")
     .optional()
     .withMessage("Product quantity is required")
