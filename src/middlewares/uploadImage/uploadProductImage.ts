@@ -47,6 +47,9 @@ const uploadToCloudinary = (
 
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("/0");
+    console.log(req.files);
+    console.log("/0");
     console.log("/1");
     console.log(req.files["imageCover"]);
     console.log("/1");
