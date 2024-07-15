@@ -72,6 +72,13 @@ export const createProductValidator = [
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
+    .custom((colors) => {
+      try {
+        JSON.parse(colors);
+      } catch (err) {
+        throw new Error("available colors must be an array of object");
+      }
+    })
     .isArray()
     .withMessage("available colors should be array of object")
     .custom((colors) => {
@@ -90,6 +97,13 @@ export const createProductValidator = [
     }),
   body("sizes")
     .optional()
+    .custom((sizes) => {
+      try {
+        JSON.parse(sizes);
+      } catch (err) {
+        throw new Error("available sizes must be an array of object");
+      }
+    })
     .isArray()
     .withMessage("available sizes should be array of string")
     .custom((sizes) => {
