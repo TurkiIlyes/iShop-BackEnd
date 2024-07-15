@@ -1,3 +1,4 @@
+import multer from "multer";
 import { uploadMixOfImages } from "./uploadImage";
 import asyncHandler from "express-async-handler";
 import { Request, Response, NextFunction } from "express";
@@ -11,15 +12,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadProductImages = uploadMixOfImages([
-  {
-    name: "imageCover",
-    maxCount: 1,
-  },
-  {
-    name: "images",
-    maxCount: 5,
-  },
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+export const uploadProductImages = upload.fields([
+  { name: "imageCover", maxCount: 1 },
+  { name: "images", maxCount: 5 },
 ]);
 
 interface CloudinaryUploadResult {
@@ -48,13 +46,13 @@ const uploadToCloudinary = (
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Upload imageCover to Cloudinary
-      console.log("filesssss");
+      console.log("files received");
       console.log(req.files);
-      console.log("filesssss");
+
+      // Upload imageCover to Cloudinary
       if (req.files && req.files["imageCover"]) {
         const result = await uploadToCloudinary(
-          req.files["imageCover"][0].buffer,
+          (req.files["imageCover"] as Express.Multer.File[])[0].buffer,
           {
             folder: "products",
             format: "jpeg",
@@ -70,7 +68,7 @@ export const resizeProductImages = asyncHandler(
       if (req.files && req.files["images"]) {
         req.body.images = [];
         await Promise.all(
-          req.files["images"].map(async (img) => {
+          (req.files["images"] as Express.Multer.File[]).map(async (img) => {
             const result = await uploadToCloudinary(img.buffer, {
               folder: "products",
               format: "jpeg",
