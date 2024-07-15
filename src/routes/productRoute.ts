@@ -26,8 +26,7 @@ const router = express.Router();
  * @desc    Get all products
  * @access  Public
  */
-// protect,
-// allowedTo("admin"),
+
 router
   .route("/")
   .get(getProducts)
@@ -38,6 +37,8 @@ router
    * @access  Private (admin only)
    */
   .post(
+    protect,
+allowedTo("admin"),
     uploadProductImages,
     resizeProductImages,
     createProductValidator,

@@ -23,7 +23,7 @@ export const createProductValidator = [
     "sold"
   ),
   body("title")
-  .notEmpty()
+    .notEmpty()
     .withMessage("Product title is required")
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
@@ -64,10 +64,7 @@ export const createProductValidator = [
       }
       return true;
     }),
-  body("sku")
-    .optional()
-    .isString()
-    .withMessage("Product sku must be a string"),
+  body("sku").optional().isString().withMessage("Product sku must be a string"),
   body("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -78,7 +75,19 @@ export const createProductValidator = [
     .isArray()
     .withMessage("available colors should be array of object")
     .custom((colors) => {
-      for (const colorObj of colors) {
+      let parsedColors;
+      try {
+        parsedColors = JSON.parse(colors);
+      } catch (err) {
+        throw new Error(
+          "Available colors should be a valid JSON array of objects"
+        );
+      }
+
+      if (!Array.isArray(parsedColors)) {
+        throw new Error("Available colors should be an array of objects");
+      }
+      for (const colorObj of parsedColors) {
         if (
           typeof colorObj !== "object" ||
           typeof colorObj.color !== "string" ||
@@ -89,6 +98,7 @@ export const createProductValidator = [
           );
         }
       }
+
       return true;
     }),
   body("sizes")
@@ -96,17 +106,30 @@ export const createProductValidator = [
     .isArray()
     .withMessage("available sizes should be array of string")
     .custom((sizes) => {
-      for (const sizeObj of sizes) {
+      let parsedSizes;
+      try {
+        parsedSizes = JSON.parse(sizes);
+      } catch (err) {
+        throw new Error(
+          "Available sizes should be a valid JSON array of objects"
+        );
+      }
+
+      if (!Array.isArray(parsedSizes)) {
+        throw new Error("Available sizes should be an array of objects");
+      }
+      for (const sizeObj of parsedSizes) {
         if (
           typeof sizeObj !== "object" ||
           typeof sizeObj.size !== "string" ||
           typeof sizeObj.quantity !== "number"
         ) {
           throw new Error(
-            "available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
+            "Available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
           );
         }
       }
+
       return true;
     }),
   body("category")
@@ -114,11 +137,11 @@ export const createProductValidator = [
     .withMessage("Product must be belong to a category")
     .isMongoId()
     .withMessage("Invalid ID formate")
-    .custom((categoryId) =>
-      Category.findById(categoryId).then((category) => {
+    .custom((category) =>
+      Category.findById(category).then((category) => {
         if (!category) {
           return Promise.reject(
-            new Error(`No category for this id: ${categoryId}`)
+            new Error(`No category for this id: ${category}`)
           );
         }
       })
@@ -203,10 +226,7 @@ export const updateProductValidator = [
       }
       return true;
     }),
-  body("sku")
-    .optional()
-    .isString()
-    .withMessage("Product sku must be a string"),
+  body("sku").optional().isString().withMessage("Product sku must be a string"),
   body("quantity")
     .optional()
     .isNumeric()
