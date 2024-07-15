@@ -4,14 +4,6 @@ import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import Category from "../../models/Category";
 import { bodySanitizer, paramsSanitizer } from "../../middlewares/sanitizer";
 
-const parseJSON = (value, { req }) => {
-  try {
-    return JSON.parse(value);
-  } catch (err) {
-    throw new Error("Invalid JSON format");
-  }
-};
-
 export const createProductValidator = [
   bodySanitizer(
     "title",
@@ -62,7 +54,6 @@ export const createProductValidator = [
     .withMessage("Product imageCover must be a string"),
   body("images")
     .optional()
-    .custom(parseJSON)
     .isArray()
     .withMessage("images should be array of string")
     .custom((images) => {
@@ -81,7 +72,6 @@ export const createProductValidator = [
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
-    .custom(parseJSON)
     .isArray()
     .withMessage("available colors should be array of object")
     .custom((colors) => {
@@ -100,7 +90,6 @@ export const createProductValidator = [
     }),
   body("sizes")
     .optional()
-    .custom(parseJSON)
     .isArray()
     .withMessage("available sizes should be array of string")
     .custom((sizes) => {
