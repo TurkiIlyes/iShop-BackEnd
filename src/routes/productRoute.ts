@@ -40,6 +40,10 @@ router
       console.log("pass1");
       next();
     },
+    (req, res, next) => {
+      console.log(req.body);
+      next();
+    },
     protect,
     allowedTo("admin"),
     uploadProductImages,
