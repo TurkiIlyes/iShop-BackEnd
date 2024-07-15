@@ -1,5 +1,5 @@
+// uploadImages.ts
 import multer from "multer";
-import { uploadMixOfImages } from "./uploadImage";
 import asyncHandler from "express-async-handler";
 import { Request, Response, NextFunction } from "express";
 import { v2 as cloudinary } from "cloudinary";
@@ -12,6 +12,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Configure Multer to use memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -46,8 +47,9 @@ const uploadToCloudinary = (
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("files received");
+      console.log("filesssss");
       console.log(req.files);
+      console.log("filesssss");
 
       // Upload imageCover to Cloudinary
       if (req.files && req.files["imageCover"]) {
