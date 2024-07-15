@@ -27,17 +27,14 @@ app.set("trust proxy", 1);
 app.use(express.json({ limit: "500kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
-app.use(
-  "/auth",
-  (req, res, next) => {
-    console.log(req.body);
-    next();
-  },
-  authRoute
-);
+app.use((req, res, next) => {
+  console.log(req.body);
+  next();
+});
+app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/categories", categoryRoute);
-app.use("/products", categoryRoute);
+app.use("/products", productRoute);
 
 app.use("*", (req, res, next) => {
   next(new ApiError("Can't find this route ", 404));
