@@ -58,7 +58,8 @@ export const resizeProductImages = asyncHandler(
           ],
         }
       );
-
+      console.log(result);
+      console.log(result.secure_url);
       req.body.imageCover = result.secure_url;
     }
 
@@ -78,7 +79,8 @@ export const resizeProductImages = asyncHandler(
         })
       );
     }
-
+    console.log(req.body.imageCover);
+    console.log(req.body.images);
     next();
   }
 );
