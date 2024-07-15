@@ -38,18 +38,18 @@ router
   .post(
     (req, res, next) => {
       console.log("pass1");
-      next();
-    },
-    (req, res, next) => {
       console.log(req.body);
+      console.log("pass1");
       next();
     },
-    protect,
-    allowedTo("admin"),
+    // protect,
+    // allowedTo("admin"),
     uploadProductImages,
     resizeProductImages,
     (req, res, next) => {
+      console.log("pass2");
       console.log(req.body);
+      console.log("pass2");
       next();
     },
     createProductValidator,
