@@ -42,8 +42,8 @@ router
     },
     protect,
     allowedTo("admin"),
-    uploadProductImages,
-    resizeProductImages,
+    // uploadProductImages,
+    // resizeProductImages,
     (req, res, next) => {
       console.log("pass2");
       next();
