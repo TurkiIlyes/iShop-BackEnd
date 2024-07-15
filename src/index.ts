@@ -24,9 +24,7 @@ app.options("*", cors());
 
 app.set("trust proxy", 1);
 
-// app.use(express.json({ limit: "500kb" }));
 app.use(express.json({ limit: "10mb" }));
-// app.use(express.static(path.join(__dirname, "uploads")));
 
 app.use("/auth", authRoute);
 app.use("/users", userRoute);

@@ -26,6 +26,8 @@ const router = express.Router();
  * @desc    Get all products
  * @access  Public
  */
+// protect,
+// allowedTo("admin"),
 router
   .route("/")
   .get(getProducts)
@@ -36,27 +38,9 @@ router
    * @access  Private (admin only)
    */
   .post(
-    (req, res, next) => {
-      console.log("pass1");
-      console.log(req.body);
-      console.log("pass1");
-      next();
-    },
-    // protect,
-    // allowedTo("admin"),
     uploadProductImages,
     resizeProductImages,
-    (req, res, next) => {
-      console.log("pass2");
-      console.log(req.body);
-      console.log("pass2");
-      next();
-    },
     createProductValidator,
-    (req, res, next) => {
-      console.log("pass3");
-      next();
-    },
     createProduct
   );
 

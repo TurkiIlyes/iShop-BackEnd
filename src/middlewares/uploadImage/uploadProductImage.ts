@@ -1,92 +1,37 @@
-// uploadImages.ts
-import multer from "multer";
 import asyncHandler from "express-async-handler";
 import { Request, Response, NextFunction } from "express";
-import { v2 as cloudinary } from "cloudinary";
-import streamifier from "streamifier";
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { customCloudinary } from "../../utils/uploadToCloudinary";
+import { uploadMixOfImages } from "./uploadImage";
 
-// Configure Multer to use memory storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-export const uploadProductImages = upload.fields([
-  { name: "imageCover", maxCount: 1 },
-  { name: "images", maxCount: 5 },
+export const uploadProductImages = uploadMixOfImages([
+  {
+    name: "imageCover",
+    maxCount: 1,
+  },
+  {
+    name: "images",
+    maxCount: 5,
+  },
 ]);
-
-interface CloudinaryUploadResult {
-  secure_url: string;
-}
-
-const uploadToCloudinary = (
-  buffer: Buffer,
-  options: object
-): Promise<CloudinaryUploadResult> => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      options,
-      (error, result) => {
-        if (result) {
-          resolve(result as CloudinaryUploadResult);
-        } else {
-          reject(error);
-        }
-      }
-    );
-    streamifier.createReadStream(buffer).pipe(stream);
-  });
-};
 
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.log("filesssss");
-      console.log(req.files);
-      console.log("filesssss");
-
-      // Upload imageCover to Cloudinary
-      if (req.files && req.files["imageCover"]) {
-        const result = await uploadToCloudinary(
-          (req.files["imageCover"] as Express.Multer.File[])[0].buffer,
-          {
-            folder: "products",
-            format: "jpeg",
-            transformation: [
-              { width: 2000, height: 1333, crop: "limit", quality: "auto" },
-            ],
-          }
-        );
-        req.body.imageCover = result.secure_url;
-      }
-
-      // Upload additional images to Cloudinary
-      if (req.files && req.files["images"]) {
-        req.body.images = [];
-        await Promise.all(
-          (req.files["images"] as Express.Multer.File[]).map(async (img) => {
-            const result = await uploadToCloudinary(img.buffer, {
-              folder: "products",
-              format: "jpeg",
-              transformation: [
-                { width: 2000, height: 1333, crop: "limit", quality: "auto" },
-              ],
-            });
-            req.body.images.push(result.secure_url);
-          })
-        );
-      }
-
-      next();
-    } catch (error) {
-      console.error("Error uploading images to Cloudinary:", error);
-      res.status(500).send({ message: "Failed to upload images" });
+    if (req.files && req.files["imageCover"]) {
+      const result = await customCloudinary(req.files["imageCover"][0].buffer);
+      req.body.imageCover = result.secure_url;
     }
+
+    if (req.files && req.files["images"]) {
+      req.body.images = [];
+      await Promise.all(
+        req.files["images"].map(async (img: { buffer: Buffer }) => {
+          const result = await customCloudinary(img.buffer);
+          req.body.images.push(result.secure_url);
+        })
+      );
+    }
+
+    next();
   }
 );
