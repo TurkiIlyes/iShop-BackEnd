@@ -17,7 +17,7 @@ import { protect, allowedTo } from "../services/authService";
 import {
   resizeProductImages,
   uploadProductImages,
-} from "../middlewares/uploadImage/uploadProductImage";
+} from "../middlewares/uploadImage/uploadProductImage2";
 
 const router = express.Router();
 

@@ -47,43 +47,56 @@ const uploadToCloudinary = (
 
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Upload imageCover to Cloudinary
-      if (req.files && req.files["imageCover"]) {
-        const result = await uploadToCloudinary(
-          req.files["imageCover"][0].buffer,
-          {
+    console.log(process.env.CLOUDINARY_CLOUD_NAME);
+    console.log(process.env.CLOUDINARY_API_KEY);
+    console.log(process.env.CLOUDINARY_API_SECRET);
+    console.log("/0");
+    console.log(req);
+    console.log("/0");
+    console.log("/1");
+    console.log(req.files["imageCover"]);
+    console.log("/1");
+    if (req.files && req.files["imageCover"]) {
+      const result = await uploadToCloudinary(
+        req.files["imageCover"][0].buffer,
+        {
+          folder: "products",
+          format: "jpeg",
+          transformation: [
+            { width: 2000, height: 1333, crop: "limit", quality: "auto" },
+          ],
+        }
+      );
+      console.log("/2");
+      console.log(req.files["imageCover"]);
+      console.log("/2");
+      console.log("/3");
+      console.log(result);
+      console.log("/3");
+      console.log("/4");
+      console.log(result.secure_url);
+      console.log("/4");
+      req.body.imageCover = result.secure_url;
+    }
+
+    if (req.files && req.files["images"]) {
+      req.body.images = [];
+      await Promise.all(
+        req.files["images"].map(async (img) => {
+          const result = await uploadToCloudinary(img.buffer, {
             folder: "products",
             format: "jpeg",
             transformation: [
               { width: 2000, height: 1333, crop: "limit", quality: "auto" },
             ],
-          }
-        );
-        req.body.imageCover = result.secure_url;
-      }
+          });
 
-      // Upload additional images to Cloudinary
-      if (req.files && req.files["images"]) {
-        req.body.images = [];
-        await Promise.all(
-          req.files["images"].map(async (img) => {
-            const result = await uploadToCloudinary(img.buffer, {
-              folder: "products",
-              format: "jpeg",
-              transformation: [
-                { width: 2000, height: 1333, crop: "limit", quality: "auto" },
-              ],
-            });
-            req.body.images.push(result.secure_url);
-          })
-        );
-      }
-
-      next();
-    } catch (error) {
-      console.error("Error uploading images to Cloudinary:", error);
-      res.status(500).send({ message: "Failed to upload images" });
+          req.body.images.push(result.secure_url);
+        })
+      );
     }
+    // console.log(req.body.imageCover);
+    // console.log(req.body.images);
+    next();
   }
 );
