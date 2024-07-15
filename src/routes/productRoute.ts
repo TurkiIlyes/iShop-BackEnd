@@ -45,7 +45,7 @@ router
     uploadProductImages,
     resizeProductImages,
     (req, res, next) => {
-      console.log("pass2");
+      console.log(req.body);
       next();
     },
     createProductValidator,
