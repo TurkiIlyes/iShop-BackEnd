@@ -36,13 +36,21 @@ router
    * @access  Private (admin only)
    */
   .post(
+    (req, res, next) => {
+      console.log("pass1");
+      next();
+    },
     protect,
     allowedTo("admin"),
     uploadProductImages,
     resizeProductImages,
+    (req, res, next) => {
+      console.log("pass2");
+      next();
+    },
     createProductValidator,
     (req, res, next) => {
-      console.log("pass");
+      console.log("pass3");
       next();
     },
     createProduct

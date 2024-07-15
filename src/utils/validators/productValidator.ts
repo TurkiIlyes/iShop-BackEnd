@@ -23,10 +23,10 @@ export const createProductValidator = [
     "sold"
   ),
   body("title")
+  .notEmpty()
+    .withMessage("Product title is required")
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
-    .notEmpty()
-    .withMessage("Product required")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
