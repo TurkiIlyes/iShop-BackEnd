@@ -30,5 +30,5 @@ const multerOptions = () => {
 export const uploadSingleImage = (fieldName: string) =>
   multerOptions().single(fieldName);
 
-export const uploadMixOfImages = (arrayOfFields: readonly multer.Field[]) =>
+export const uploadMixOfImages = (arrayOfFields: multer.Field[]) =>
   multerOptions().fields(arrayOfFields);
