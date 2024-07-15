@@ -47,6 +47,9 @@ const uploadToCloudinary = (
 
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(process.env.CLOUDINARY_CLOUD_NAME);
+    console.log(process.env.CLOUDINARY_API_KEY);
+    console.log(process.env.CLOUDINARY_API_SECRET);
     console.log("/0");
     console.log(req.files);
     console.log("/0");
