@@ -4,6 +4,14 @@ import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import Category from "../../models/Category";
 import { bodySanitizer, paramsSanitizer } from "../../middlewares/sanitizer";
 
+const parseJSON = (value, { req }) => {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    throw new Error("Invalid JSON format");
+  }
+};
+
 export const createProductValidator = [
   bodySanitizer(
     "title",
@@ -54,6 +62,7 @@ export const createProductValidator = [
     .withMessage("Product imageCover must be a string"),
   body("images")
     .optional()
+    .custom(parseJSON)
     .isArray()
     .withMessage("images should be array of string")
     .custom((images) => {
@@ -72,53 +81,30 @@ export const createProductValidator = [
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
+    .custom(parseJSON)
     .isArray()
     .withMessage("available colors should be array of object")
     .custom((colors) => {
-      let parsedColors;
-      try {
-        parsedColors = JSON.parse(colors);
-      } catch (err) {
-        throw new Error(
-          "Available colors should be a valid JSON array of objects"
-        );
-      }
-
-      if (!Array.isArray(parsedColors)) {
-        throw new Error("Available colors should be an array of objects");
-      }
-      for (const colorObj of parsedColors) {
+      for (const colorObj of colors) {
         if (
           typeof colorObj !== "object" ||
           typeof colorObj.color !== "string" ||
           typeof colorObj.quantity !== "number"
         ) {
           throw new Error(
-            "available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
+            "Available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
           );
         }
       }
-
       return true;
     }),
   body("sizes")
     .optional()
+    .custom(parseJSON)
     .isArray()
     .withMessage("available sizes should be array of string")
     .custom((sizes) => {
-      let parsedSizes;
-      try {
-        parsedSizes = JSON.parse(sizes);
-      } catch (err) {
-        throw new Error(
-          "Available sizes should be a valid JSON array of objects"
-        );
-      }
-
-      if (!Array.isArray(parsedSizes)) {
-        throw new Error("Available sizes should be an array of objects");
-      }
-      for (const sizeObj of parsedSizes) {
+      for (const sizeObj of sizes) {
         if (
           typeof sizeObj !== "object" ||
           typeof sizeObj.size !== "string" ||
@@ -129,7 +115,6 @@ export const createProductValidator = [
           );
         }
       }
-
       return true;
     }),
   body("category")
