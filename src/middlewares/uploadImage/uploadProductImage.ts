@@ -47,6 +47,9 @@ const uploadToCloudinary = (
 
 export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("/1");
+    console.log(req.files["imageCover"]);
+    console.log("/1");
     if (req.files && req.files["imageCover"]) {
       const result = await uploadToCloudinary(
         req.files["imageCover"][0].buffer,
@@ -58,8 +61,15 @@ export const resizeProductImages = asyncHandler(
           ],
         }
       );
+      console.log("/2");
+      console.log(req.files["imageCover"]);
+      console.log("/2");
+      console.log("/3");
       console.log(result);
+      console.log("/3");
+      console.log("/4");
       console.log(result.secure_url);
+      console.log("/4");
       req.body.imageCover = result.secure_url;
     }
 
@@ -79,8 +89,8 @@ export const resizeProductImages = asyncHandler(
         })
       );
     }
-    console.log(req.body.imageCover);
-    console.log(req.body.images);
+    // console.log(req.body.imageCover);
+    // console.log(req.body.images);
     next();
   }
 );
