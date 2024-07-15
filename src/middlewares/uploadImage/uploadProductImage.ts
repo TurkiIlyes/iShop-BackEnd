@@ -51,7 +51,7 @@ export const resizeProductImages = asyncHandler(
     console.log(process.env.CLOUDINARY_API_KEY);
     console.log(process.env.CLOUDINARY_API_SECRET);
     console.log("/0");
-    console.log(req.files);
+    console.log(req);
     console.log("/0");
     console.log("/1");
     console.log(req.files["imageCover"]);
