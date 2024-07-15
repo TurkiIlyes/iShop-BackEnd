@@ -49,6 +49,9 @@ export const resizeProductImages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Upload imageCover to Cloudinary
+      console.log("filesssss");
+      console.log(req.files);
+      console.log("filesssss");
       if (req.files && req.files["imageCover"]) {
         const result = await uploadToCloudinary(
           req.files["imageCover"][0].buffer,
