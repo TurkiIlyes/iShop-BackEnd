@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import { Model as MongooseModel, Document, FilterQuery } from "mongoose";
 import ApiError from "../utils/ApiError";
 import extractNonEmptyFields from "../utils/extractNonEmptyFields";
-import parseJsonArrays from "../utils/parseJsonArray";
+import parseJsonArrays from "../utils/parseArray";
 
 // Create a new document
 export const createOne = <T extends Document>(Model: MongooseModel<T>) =>

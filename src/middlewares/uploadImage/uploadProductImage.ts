@@ -31,7 +31,7 @@ export const resizeProductImages = asyncHandler(
         })
       );
     }
-
+    req.body.images = req.body.images.join(',');
     next();
   }
 );
