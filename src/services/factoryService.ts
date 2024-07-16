@@ -4,20 +4,14 @@ import asyncHandler from "express-async-handler";
 import { Model as MongooseModel, Document, FilterQuery } from "mongoose";
 import ApiError from "../utils/ApiError";
 import extractNonEmptyFields from "../utils/extractNonEmptyFields";
+import parseJsonArrays from "../utils/parseJsonArray";
 
 // Create a new document
 export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    let colors = [];
-    if (req.body.colors) {
-      colors = JSON.parse(req.body.colors);
-    }
-    let sizes = [];
-    if (req.body.sizes) {
-      sizes = JSON.parse(req.body.sizes);
-    }
+    const parsedArr = parseJsonArrays(req, ["colors", "sizes", "images"]);
 
-    const newDoc = await Model.create({ ...req.body, colors, sizes });
+    const newDoc = await Model.create({ ...req.body, ...parsedArr });
     res.status(201).json({ data: newDoc });
   });
 

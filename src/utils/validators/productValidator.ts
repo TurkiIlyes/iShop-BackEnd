@@ -56,13 +56,12 @@ export const createProductValidator = [
     .optional()
     .custom((images, { req }) => {
       try {
-        const imagesArray = images.split(",");
+        const imagesArray = JSON.parse(images);
         for (const image of imagesArray) {
           if (typeof image !== "string") {
             throw new Error();
           }
         }
-        req.body.images = imagesArray;
         return true;
       } catch (err) {
         throw new Error("images should be an array of strings");
