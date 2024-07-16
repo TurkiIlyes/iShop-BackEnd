@@ -53,9 +53,20 @@ export const createProductValidator = [
     .isString()
     .withMessage("Product imageCover must be a string"),
   body("images")
-  .optional()
-  .isArray()
-  .withMessage('images should be array of string'),
+    .optional()
+    .custom((images) => {
+      try {
+        const imagesArray = images.split(",");
+        for (const image of imagesArray) {
+          if (typeof image !== "string") {
+            throw new Error();
+          }
+        }
+        return true;
+      } catch (err) {
+        throw new Error("images should be an array of strings");
+      }
+    }),
   body("sku").optional().isString().withMessage("Product sku must be a string"),
   body("quantity")
     .notEmpty()
