@@ -13,6 +13,7 @@ const parseArrays = (req: Request, fields) => {
               throw new Error();
             }
           }
+          parsedArrays[field] = imagesArray;
         } else {
           parsedArrays[field] = JSON.parse(req.body[field]);
         }
