@@ -8,7 +8,16 @@ import extractNonEmptyFields from "../utils/extractNonEmptyFields";
 // Create a new document
 export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const newDoc = await Model.create(req.body);
+    let colors = [];
+    if (req.body.colors) {
+      colors = JSON.parse(req.body.colors);
+    }
+    let sizes = [];
+    if (req.body.sizes) {
+      sizes = JSON.parse(req.body.sizes);
+    }
+
+    const newDoc = await Model.create({ ...req.body, colors, sizes });
     res.status(201).json({ data: newDoc });
   });
 
