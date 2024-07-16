@@ -95,7 +95,7 @@ export const createProductValidator = [
             throw new Error();
           }
         }
-        req.body.colors = parsedColors;
+        colors = parsedColors;
         return true;
       } catch (err) {
         throw new Error(
@@ -120,7 +120,7 @@ export const createProductValidator = [
             throw new Error();
           }
         }
-        req.body.sizes = parsedSizes;
+        sizes = parsedSizes;
         return true;
       } catch (err) {
         throw new Error(
