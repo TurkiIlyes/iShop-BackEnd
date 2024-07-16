@@ -54,7 +54,7 @@ export const createProductValidator = [
     .withMessage("Product imageCover must be a string"),
   body("images")
     .optional()
-    .custom((images) => {
+    .custom((images, { req }) => {
       try {
         const imagesArray = images.split(",");
         for (const image of imagesArray) {
@@ -62,6 +62,7 @@ export const createProductValidator = [
             throw new Error();
           }
         }
+        req.body.images = imagesArray;
         return true;
       } catch (err) {
         throw new Error("images should be an array of strings");
@@ -75,7 +76,7 @@ export const createProductValidator = [
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
-    .custom((colors) => {
+    .custom((colors, { req }) => {
       try {
         const parsedColors = JSON.parse(colors);
         if (!Array.isArray(parsedColors)) {
@@ -90,6 +91,7 @@ export const createProductValidator = [
             throw new Error();
           }
         }
+        req.body.colors = parsedColors;
         return true;
       } catch (err) {
         throw new Error(
@@ -99,7 +101,7 @@ export const createProductValidator = [
     }),
   body("sizes")
     .optional()
-    .custom((sizes) => {
+    .custom((sizes, { req }) => {
       try {
         const parsedSizes = JSON.parse(sizes);
         if (!Array.isArray(parsedSizes)) {
@@ -114,6 +116,7 @@ export const createProductValidator = [
             throw new Error();
           }
         }
+        req.body.sizes = parsedSizes;
         return true;
       } catch (err) {
         throw new Error(
