@@ -82,8 +82,6 @@ export const createProductValidator = [
 
         console.log(colors);
         console.log(parsedColors);
-        console.log(colors.split(","));
-        console.log(parsedColors.split(","));
 
         if (!Array.isArray(parsedColors)) {
           throw new Error();
