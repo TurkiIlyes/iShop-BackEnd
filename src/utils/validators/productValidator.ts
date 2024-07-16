@@ -95,7 +95,6 @@ export const createProductValidator = [
             throw new Error();
           }
         }
-        colors = parsedColors;
         return true;
       } catch (err) {
         throw new Error(
@@ -120,7 +119,6 @@ export const createProductValidator = [
             throw new Error();
           }
         }
-        sizes = parsedSizes;
         return true;
       } catch (err) {
         throw new Error(

@@ -116,21 +116,6 @@ productSchema.pre("save", function (next) {
   // Image Cover
   this.imageCover = this.imageCover || "https://via.placeholder.com/150";
 
-  if (typeof this.colors === "string") {
-    try {
-      this.colors = JSON.parse(this.colors);
-    } catch (err) {
-      return next(new Error("Invalid colors format"));
-    }
-  }
-  if (typeof this.sizes === "string") {
-    try {
-      this.sizes = JSON.parse(this.sizes);
-    } catch (err) {
-      return next(new Error("Invalid sizes format"));
-    }
-  }
-
   next();
 });
 
