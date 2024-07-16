@@ -74,51 +74,49 @@ export const createProductValidator = [
     .optional()
     .custom((colors) => {
       try {
-        JSON.parse(colors);
-      } catch (err) {
-        throw new Error("available colors must be an array of object");
-      }
-    })
-    .isArray()
-    .withMessage("available colors should be array of object")
-    .custom((colors) => {
-      for (const colorObj of colors) {
-        if (
-          typeof colorObj !== "object" ||
-          typeof colorObj.color !== "string" ||
-          typeof colorObj.quantity !== "number"
-        ) {
-          throw new Error(
-            "Available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
-          );
+        const parsedColors = JSON.parse(colors);
+        if (!Array.isArray(parsedColors)) {
+          throw new Error();
         }
+        for (const colorObj of parsedColors) {
+          if (
+            typeof colorObj !== "object" ||
+            typeof colorObj.color !== "string" ||
+            typeof colorObj.quantity !== "number"
+          ) {
+            throw new Error();
+          }
+        }
+        return true;
+      } catch (err) {
+        throw new Error(
+          "Available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
+        );
       }
-      return true;
     }),
   body("sizes")
     .optional()
     .custom((sizes) => {
       try {
-        JSON.parse(sizes);
-      } catch (err) {
-        throw new Error("available sizes must be an array of object");
-      }
-    })
-    .isArray()
-    .withMessage("available sizes should be array of string")
-    .custom((sizes) => {
-      for (const sizeObj of sizes) {
-        if (
-          typeof sizeObj !== "object" ||
-          typeof sizeObj.size !== "string" ||
-          typeof sizeObj.quantity !== "number"
-        ) {
-          throw new Error(
-            "Available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
-          );
+        const parsedSizes = JSON.parse(sizes);
+        if (!Array.isArray(parsedSizes)) {
+          throw new Error();
         }
+        for (const sizeObj of parsedSizes) {
+          if (
+            typeof sizeObj !== "object" ||
+            typeof sizeObj.size !== "string" ||
+            typeof sizeObj.quantity !== "number"
+          ) {
+            throw new Error();
+          }
+        }
+        return true;
+      } catch (err) {
+        throw new Error(
+          "Available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
+        );
       }
-      return true;
     }),
   body("category")
     .notEmpty()
