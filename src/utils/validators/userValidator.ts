@@ -147,16 +147,7 @@ export const createUserValidator = [
     )
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
-    )
-    .custom((password, { req }) => {
-      if (password !== req.body.confirmPassword) {
-        throw new Error("Password Confirmation incorrect");
-      }
-      return true;
-    }),
-  body("confirmPassword")
-    .notEmpty()
-    .withMessage("password confirmation required"),
+    ),
   body("status")
     .notEmpty()
     .isIn(["active", "inactive"])
@@ -241,16 +232,7 @@ export const updatePasswordValidator = [
     )
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
-    )
-    .custom((password, { req }) => {
-      if (password !== req.body.confirmPassword) {
-        throw new Error("Password Confirmation incorrect");
-      }
-      return true;
-    }),
-  body("confirmPassword")
-    .notEmpty()
-    .withMessage("password confirmation required"),
+    ),
   validatorMiddleware,
 ];
 export const deleteUserValidator = [
