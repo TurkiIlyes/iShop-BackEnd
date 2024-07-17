@@ -26,6 +26,7 @@ export const updateLoggedUserValidator = [
     .optional()
     .isIn(["active", "inactive"])
     .withMessage("status must be active or inactive"),
+
   body("image").optional().isString().withMessage("image must be a string"),
   body("address")
     .optional()

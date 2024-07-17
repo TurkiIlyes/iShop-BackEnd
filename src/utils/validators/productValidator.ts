@@ -34,6 +34,8 @@ export const createProductValidator = [
   body("description")
     .notEmpty()
     .withMessage("Product description is required")
+    .isLength({ min: 20 })
+    .withMessage("Too short product description")
     .isLength({ max: 2000 })
     .withMessage("Too long description"),
   body("price")

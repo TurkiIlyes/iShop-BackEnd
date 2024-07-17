@@ -13,7 +13,7 @@ export interface ProductType extends Document {
   images?: string[];
   sku?: string;
   quantity: number;
-  colors?: { color: string; quantity: number }[];
+  colors?: { _id: mongoose.Types.ObjectId; color: string; quantity: number }[];
   sizes?: { size: string; quantity: number }[];
   category: mongoose.Types.ObjectId;
   sold: number;

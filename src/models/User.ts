@@ -8,7 +8,7 @@ export interface UserType extends Document {
   password?: string;
   provider?: string;
   providerId?: string;
-  image: string;
+  image?: string;
   address?: {
     details: string;
     governorate: string;

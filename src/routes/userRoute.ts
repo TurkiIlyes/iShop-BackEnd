@@ -22,7 +22,7 @@ import {
 } from "../utils/validators/userValidator";
 import {
   uploadUserImage,
-  resizeProfilImage,
+  resizeUserImage,
 } from "../middlewares/uploadImage/uploadUserImage";
 import extractUserId from "../middlewares/extractUserId";
 
@@ -46,12 +46,7 @@ router
    * @desc    Update the logged-in user
    * @access  Private
    */
-  .put(
-    uploadUserImage,
-    resizeProfilImage,
-    updateLoggedUserValidator,
-    updateUser
-  )
+  .put(uploadUserImage, resizeUserImage, updateLoggedUserValidator, updateUser)
   /**
    * @route   DELETE /me/:id
    * @desc    Delete the logged-in user
@@ -86,7 +81,7 @@ router
    * @desc    Create a new user
    * @access  Private (admin only)
    */
-  .post(uploadUserImage, resizeProfilImage,createUserValidator, createUser);
+  .post(uploadUserImage, resizeUserImage, createUserValidator, createUser);
 
 router
   .route("/:id")
@@ -101,7 +96,7 @@ router
    * @desc    Update a user by ID
    * @access  Private (admin only)
    */
-  .put(uploadUserImage, resizeProfilImage, updateUserValidator, updateUser)
+  .put(uploadUserImage, resizeUserImage, updateUserValidator, updateUser)
   /**
    * @route   DELETE /users/:id
    * @desc    Delete a user by ID
@@ -114,6 +109,6 @@ router
  * @desc    Update a user's password by ID
  * @access  Private (admin only)
  */
-router.put("/changePassword/:id", updatePasswordValidator, updateUser);
+router.put("/change-password/:id", updatePasswordValidator, updateUser);
 
 export default router;
