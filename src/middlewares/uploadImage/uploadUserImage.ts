@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { customCloudinary } from "../../utils/uploadToCloudinary";
 
-export const uploadUserImage = uploadSingleImage("profileImg");
+export const uploadUserImage = uploadSingleImage("image");
 
 export const resizeUserImage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
