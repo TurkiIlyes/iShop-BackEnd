@@ -38,7 +38,7 @@ router
    */
   .post(
     protect,
-allowedTo("admin"),
+    allowedTo("admin"),
     uploadProductImages,
     resizeProductImages,
     createProductValidator,

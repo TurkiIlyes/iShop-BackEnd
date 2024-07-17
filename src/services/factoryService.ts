@@ -19,7 +19,11 @@ export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
 export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const notEmptyData = extractNonEmptyFields<T>(req.body, Model);
+    const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
+    const notEmptyData = extractNonEmptyFields<T>(
+      { ...req.body, ...parsedArr },
+      Model
+    );
     const document = await Model.findByIdAndUpdate(
       id,
       { $set: notEmptyData },

@@ -54,7 +54,7 @@ export const createProductValidator = [
     .withMessage("Product imageCover must be a string"),
   body("images")
     .optional()
-    .custom((images, { req }) => {
+    .custom((images) => {
       try {
         const imagesArray = images.split(",");
         for (const image of imagesArray) {
@@ -62,7 +62,6 @@ export const createProductValidator = [
             throw new Error();
           }
         }
-        req.body.images = imagesArray;
         return true;
       } catch (err) {
         throw new Error("images should be an array of strings");
@@ -76,7 +75,7 @@ export const createProductValidator = [
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
-    .custom((colors, { req }) => {
+    .custom((colors) => {
       try {
         const parsedColors = JSON.parse(colors);
 
@@ -104,9 +103,10 @@ export const createProductValidator = [
     }),
   body("sizes")
     .optional()
-    .custom((sizes, { req }) => {
+    .custom((sizes) => {
       try {
         const parsedSizes = JSON.parse(sizes);
+
         if (!Array.isArray(parsedSizes)) {
           throw new Error();
         }
@@ -183,19 +183,22 @@ export const updateProductValidator = [
     "sold"
   ),
   body("title")
+    .notEmpty()
+    .withMessage("Product title is required")
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
-    .optional()
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
   body("description")
-    .optional()
+    .notEmpty()
+    .withMessage("Product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long description"),
   body("price")
-    .optional()
+    .notEmpty()
+    .withMessage("Product price is required")
     .isNumeric()
     .withMessage("Product price must be a number")
     .isLength({ max: 32 })
@@ -205,71 +208,94 @@ export const updateProductValidator = [
     .isNumeric()
     .withMessage("Product discount must be a number"),
   body("imageCover")
-    .optional()
+    .notEmpty()
+    .withMessage("Product imageCover is required")
     .isString()
     .withMessage("Product imageCover must be a string"),
   body("images")
     .optional()
-    .isArray()
-    .withMessage("images should be array of string")
     .custom((images) => {
-      for (const image of images) {
-        if (typeof image !== "string") {
-          throw new Error("images must be an array of strings");
+      try {
+        const imagesArray = images.split(",");
+        for (const image of imagesArray) {
+          if (typeof image !== "string") {
+            throw new Error();
+          }
         }
+        return true;
+      } catch (err) {
+        throw new Error("images should be an array of strings");
       }
-      return true;
     }),
   body("sku").optional().isString().withMessage("Product sku must be a string"),
   body("quantity")
-    .optional()
+    .notEmpty()
+    .withMessage("Product quantity is required")
     .isNumeric()
     .withMessage("Product quantity must be a number"),
   body("colors")
     .optional()
-    .isArray()
-    .withMessage("available colors should be array of object")
     .custom((colors) => {
-      for (const colorObj of colors) {
-        if (
-          typeof colorObj !== "object" ||
-          typeof colorObj.color !== "string" ||
-          typeof colorObj.quantity !== "number"
-        ) {
-          throw new Error(
-            "available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
-          );
+      try {
+        const parsedColors = JSON.parse(colors);
+
+        console.log(colors);
+        console.log(parsedColors);
+
+        if (!Array.isArray(parsedColors)) {
+          throw new Error();
         }
+        for (const colorObj of parsedColors) {
+          if (
+            typeof colorObj !== "object" ||
+            typeof colorObj.color !== "string" ||
+            typeof colorObj.quantity !== "number"
+          ) {
+            throw new Error();
+          }
+        }
+        return true;
+      } catch (err) {
+        throw new Error(
+          "Available colors must be an array of objects with 'color' (string) and 'quantity' (number) properties"
+        );
       }
-      return true;
     }),
   body("sizes")
     .optional()
-    .isArray()
-    .withMessage("available sizes should be array of string")
     .custom((sizes) => {
-      for (const sizeObj of sizes) {
-        if (
-          typeof sizeObj !== "object" ||
-          typeof sizeObj.size !== "string" ||
-          typeof sizeObj.quantity !== "number"
-        ) {
-          throw new Error(
-            "available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
-          );
+      try {
+        const parsedSizes = JSON.parse(sizes);
+
+        if (!Array.isArray(parsedSizes)) {
+          throw new Error();
         }
+        for (const sizeObj of parsedSizes) {
+          if (
+            typeof sizeObj !== "object" ||
+            typeof sizeObj.size !== "string" ||
+            typeof sizeObj.quantity !== "number"
+          ) {
+            throw new Error();
+          }
+        }
+        return true;
+      } catch (err) {
+        throw new Error(
+          "Available sizes must be an array of objects with 'size' (string) and 'quantity' (number) properties"
+        );
       }
-      return true;
     }),
   body("category")
-    .optional()
+    .notEmpty()
+    .withMessage("Product must be belong to a category")
     .isMongoId()
     .withMessage("Invalid ID formate")
-    .custom((categoryId) =>
-      Category.findById(categoryId).then((category) => {
+    .custom((category) =>
+      Category.findById(category).then((category) => {
         if (!category) {
           return Promise.reject(
-            new Error(`No category for this id: ${categoryId}`)
+            new Error(`No category for this id: ${category}`)
           );
         }
       })
