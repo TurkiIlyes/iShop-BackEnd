@@ -7,6 +7,7 @@ const extractNonEmptyFields = <T>(requestBody: any, model: any): Partial<T> => {
     }
   }
   console.log("//");
+  console.log(Object.keys(model.schema.paths));
   console.log(requestBody);
   console.log(notEmptyData);
   console.log("//");
