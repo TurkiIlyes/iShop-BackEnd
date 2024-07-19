@@ -36,6 +36,7 @@ export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
       { ...req.body, ...parsedArr },
       Model
     );
+    console.log(notEmptyData);
     const document = await Model.findByIdAndUpdate(
       id,
       { $set: notEmptyData },
