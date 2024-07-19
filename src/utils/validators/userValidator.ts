@@ -102,8 +102,7 @@ export const deleteLoggedUserValidator = [
   bodySanitizer("password"),
   param("id").isMongoId().withMessage("Invalid User ID format"),
   body("password")
-    .notEmpty()
-    .withMessage("Password is required")
+    .optional()
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
       "i"
