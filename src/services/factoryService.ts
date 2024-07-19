@@ -30,6 +30,8 @@ export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
       "images",
       "address",
     ]);
+    console.log(req.body);
+    console.log(parsedArr);
     const notEmptyData = extractNonEmptyFields<T>(
       { ...req.body, ...parsedArr },
       Model

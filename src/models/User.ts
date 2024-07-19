@@ -10,10 +10,10 @@ export interface UserType extends Document {
   providerId?: string;
   image?: string;
   address?: {
-    details: string;
-    governorate: string;
-    city: string;
-    postalCode: string;
+    details?: string;
+    governorate?: string;
+    city?: string;
+    postalCode?: string;
   };
   wishList?: mongoose.Types.ObjectId[];
   basketList?: mongoose.Types.ObjectId[];
