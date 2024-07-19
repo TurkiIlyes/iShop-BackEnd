@@ -31,6 +31,7 @@ export const updateLoggedUserValidator = [
   body("address")
     .optional()
     .custom((address) => {
+      console.log(address);
       const parsedAddress = JSON.parse(address);
       const { details, governorate, city, postalCode } = parsedAddress;
       if (details && typeof details !== "string") {
