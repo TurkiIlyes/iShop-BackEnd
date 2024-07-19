@@ -46,7 +46,16 @@ router
    * @desc    Update the logged-in user
    * @access  Private
    */
-  .put(uploadUserImage, resizeUserImage, updateLoggedUserValidator, updateUser)
+  .put(
+    uploadUserImage,
+    resizeUserImage,
+    updateLoggedUserValidator,
+    (req, res, next) => {
+      console.log(req.body);
+      next();
+    },
+    updateUser
+  )
   /**
    * @route   DELETE /me/:id
    * @desc    Delete the logged-in user
