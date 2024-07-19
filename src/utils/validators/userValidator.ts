@@ -113,10 +113,12 @@ export const deleteLoggedUserValidator = [
     )
     .custom(async (password, { req }) => {
       const user = await User.findById(req.params.id);
-
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        throw new Error("Password Confirmation incorrect");
+      if (!user.provider && !user.providerId) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+          throw new Error("Password Confirmation incorrect");
+        }
       }
+
       return true;
     }),
 
