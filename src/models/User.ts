@@ -25,6 +25,9 @@ export interface UserType extends Document {
   pwResetExpires?: Date;
   pwResetVerified?: boolean;
   pwUpdatedAt: Date;
+  emailNotifications: boolean;
+  emailSecurityNotifications: boolean;
+  phoneSecurityNotifications: boolean;
 }
 
 const userSchema = new Schema<UserType>(
@@ -84,6 +87,18 @@ const userSchema = new Schema<UserType>(
     pwUpdatedAt: {
       type: Date,
       default: Date.now(),
+    },
+    emailNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    emailSecurityNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    phoneSecurityNotifications: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
