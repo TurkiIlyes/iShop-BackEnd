@@ -49,15 +49,7 @@ router
   .put(
     uploadUserImage,
     resizeUserImage,
-    (req, res, next) => {
-      console.log(req.body);
-      next();
-    },
     updateLoggedUserValidator,
-    (req, res, next) => {
-      console.log(req.body);
-      next();
-    },
     updateUser
   )
   /**
