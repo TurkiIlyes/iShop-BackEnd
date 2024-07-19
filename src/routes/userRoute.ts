@@ -50,12 +50,12 @@ router
     uploadUserImage,
     resizeUserImage,
     (req, res, next) => {
-      console.log(JSON.parse(req.body.address));
+      console.log(req.body);
       next();
     },
     updateLoggedUserValidator,
     (req, res, next) => {
-      console.log(JSON.parse(req.body.address));
+      console.log(req.body);
       next();
     },
     updateUser
