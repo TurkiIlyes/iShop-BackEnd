@@ -49,6 +49,10 @@ router
   .put(
     uploadUserImage,
     resizeUserImage,
+    (req, res, next) => {
+      console.log(JSON.parse(req.body.address));
+      next();
+    },
     updateLoggedUserValidator,
     (req, res, next) => {
       console.log(JSON.parse(req.body.address));

@@ -24,12 +24,7 @@ export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
 export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const parsedArr = parseArrays(req, [
-      "colors",
-      "sizes",
-      "images",
-      "address",
-    ]);
+    const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
     console.log(req.body);
     console.log(parsedArr);
     const notEmptyData = extractNonEmptyFields<T>(
