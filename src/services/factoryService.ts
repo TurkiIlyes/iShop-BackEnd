@@ -9,7 +9,12 @@ import parseArrays from "../utils/parseArray";
 // Create a new document
 export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
+    const parsedArr = parseArrays(req, [
+      "colors",
+      "sizes",
+      "images",
+      "address",
+    ]);
 
     const newDoc = await Model.create({ ...req.body, ...parsedArr });
     res.status(201).json({ data: newDoc });
@@ -19,7 +24,12 @@ export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
 export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
+    const parsedArr = parseArrays(req, [
+      "colors",
+      "sizes",
+      "images",
+      "address",
+    ]);
     const notEmptyData = extractNonEmptyFields<T>(
       { ...req.body, ...parsedArr },
       Model

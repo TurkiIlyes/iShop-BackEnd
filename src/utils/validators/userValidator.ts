@@ -30,10 +30,9 @@ export const updateLoggedUserValidator = [
   body("image").optional().isString().withMessage("image must be a string"),
   body("address")
     .optional()
-    .isObject()
-    .withMessage("address must be an object")
     .custom((address) => {
-      const { details, governorate, city, postalCode } = address;
+      const parsedAddress = JSON.parse(address);
+      const { details, governorate, city, postalCode } = parsedAddress;
       if (details && typeof details !== "string") {
         throw new Error("details must be a string");
       }
