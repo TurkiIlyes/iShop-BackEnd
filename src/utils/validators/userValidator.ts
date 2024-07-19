@@ -9,7 +9,17 @@ import {
 // LOGED USER ONLY
 export const updateLoggedUserValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("name", "email", "phone", "status", "address", "image"),
+  bodySanitizer(
+    "name",
+    "email",
+    "phone",
+    "status",
+    "address.details",
+    "address.governorate",
+    "address.city",
+    "address.postalCode",
+    "image"
+  ),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("name")
     .optional()
