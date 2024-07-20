@@ -78,16 +78,6 @@ export const updateLoggedUserPasswordValidator = [
     )
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
-    ),
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
-      "i"
-    )
-    .withMessage(
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
     )
     .custom(async (currentPassword, { req }) => {
       const user = await User.findById(req.params.id);
@@ -99,6 +89,16 @@ export const updateLoggedUserPasswordValidator = [
 
       return true;
     }),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
+      "i"
+    )
+    .withMessage(
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+    ),
   validatorMiddleware,
 ];
 export const deleteLoggedUserValidator = [
