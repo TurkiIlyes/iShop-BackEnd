@@ -78,6 +78,8 @@ router
 router.put(
   "/update-password",
   extractUserId,
+  uploadUserImage,
+  resizeUserImage,
   (req, res, next) => {
     console.log("/*/");
     console.log(req.params);
