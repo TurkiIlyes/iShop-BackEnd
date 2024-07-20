@@ -23,7 +23,10 @@ export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
 // Update an existing document by ID
 export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
+    let { id } = req.params;
+    // if (!id) {
+    //   id = req.body.userId;
+    // }
     const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
     console.log(req.body);
     console.log(parsedArr);
