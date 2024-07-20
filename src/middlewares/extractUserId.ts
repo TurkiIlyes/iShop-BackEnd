@@ -13,6 +13,8 @@ const extractUserId = asyncHandler(
 
     console.log(req.user._id.toString());
     req.params.id = req.user._id.toString(); // Set the user ID from token to req.params.id
+    console.log("tt");
+    console.log(req.params.id);
     next();
   }
 );
