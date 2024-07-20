@@ -19,7 +19,10 @@ export const updateLoggedUserValidator = [
     "address.governorate",
     "address.city",
     "address.postalCode",
-    "image"
+    "image",
+    "emailProductsNotifications",
+    "emailSecurityNotifications",
+    "phoneSecurityNotifications"
   ),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("name")
