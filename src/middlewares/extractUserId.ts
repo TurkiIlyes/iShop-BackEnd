@@ -10,7 +10,7 @@ const extractUserId = asyncHandler(
     if (!req.user) {
       return next(new ApiError("Not authorized to access this route", 401));
     }
-    req.params.id = req.user.id; // Set the user ID from token to req.params.id
+    req.params.id = req.user._id.toString(); // Set the user ID from token to req.params.id
     next();
   }
 );
