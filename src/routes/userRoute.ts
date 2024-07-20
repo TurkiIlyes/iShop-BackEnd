@@ -78,6 +78,11 @@ router
 router.put(
   "/update-password",
   extractUserId,
+  (req, res, next) => {
+    console.log(req.params);
+    console.log(req.body);
+    next();
+  },
   updateLoggedUserPasswordValidator,
   updateLoggedUserPassword
 );

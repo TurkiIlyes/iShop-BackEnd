@@ -67,7 +67,7 @@ export const updateLoggedUserValidator = [
 ];
 export const updateLoggedUserPasswordValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("currentPassword", "password", "confirmPassword"),
+  bodySanitizer("currentPassword", "password"),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("currentPassword")
     .notEmpty()
@@ -89,15 +89,16 @@ export const updateLoggedUserPasswordValidator = [
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
     )
-    .custom((password, { req }) => {
-      if (password !== req.body.confirmPassword) {
-        throw new Error("Password Confirmation incorrect");
+    .custom(async (currentPassword, { req }) => {
+      const user = await User.findById(req.params.id);
+      if (!user.provider && !user.providerId) {
+        if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+          throw new Error("Password Confirmation incorrect");
+        }
       }
+
       return true;
     }),
-  body("confirmPassword")
-    .notEmpty()
-    .withMessage("password confirmation required"),
   validatorMiddleware,
 ];
 export const deleteLoggedUserValidator = [
