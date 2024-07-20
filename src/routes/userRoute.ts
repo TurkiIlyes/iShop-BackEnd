@@ -32,9 +32,9 @@ const router = express.Router();
 router.use(protect);
 
 // Routes for operations on the logged-in user by ID
-router.use("/me/:id", extractUserId);
+router.use("/me", extractUserId);
 router
-  .route("/me/:id")
+  .route("/me")
   /**
    * @route   GET /me/:id
    * @desc    Get the logged-in user
@@ -46,12 +46,7 @@ router
    * @desc    Update the logged-in user
    * @access  Private
    */
-  .put(
-    uploadUserImage,
-    resizeUserImage,
-    updateLoggedUserValidator,
-    updateUser
-  )
+  .put(uploadUserImage, resizeUserImage, updateLoggedUserValidator, updateUser)
   /**
    * @route   DELETE /me/:id
    * @desc    Delete the logged-in user
