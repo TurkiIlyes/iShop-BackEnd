@@ -79,6 +79,7 @@ router.put(
   "/update-password",
   extractUserId,
   (req, res, next) => {
+    console.log("/*/");
     console.log(req.params);
     console.log(req.body);
     next();
