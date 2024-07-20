@@ -40,7 +40,14 @@ router
    * @desc    Get the logged-in user
    * @access  Private
    */
-  .get(getLoggedUserValidator, getUser)
+  .get(
+    (req, res, next) => {
+      console.log(req.params);
+      next();
+    },
+    getLoggedUserValidator,
+    getUser
+  )
   /**
    * @route   PUT /me/:id
    * @desc    Update the logged-in user
