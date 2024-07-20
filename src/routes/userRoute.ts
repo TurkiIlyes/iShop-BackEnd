@@ -32,9 +32,9 @@ const router = express.Router();
 router.use(protect);
 
 // Routes for operations on the logged-in user by ID
-router.use("/me", extractUserId);
+router.use("/me/:id", extractUserId);
 router
-  .route("/me")
+  .route("/me/:id")
   /**
    * @route   GET /me/:id
    * @desc    Get the logged-in user
