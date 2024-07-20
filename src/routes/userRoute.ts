@@ -75,11 +75,13 @@ router
  * @desc    Update the password of the logged-in user
  * @access  Private
  */
-router.put(
-  "/update-password",
-  updateLoggedUserPasswordValidator,
-  updateLoggedUserPassword
-);
+router
+  .route("/update-password")
+  .put(
+    extractUserId,
+    updateLoggedUserPasswordValidator,
+    updateLoggedUserPassword
+  );
 
 // Authorization middleware for admin-only routes
 router.use(allowedTo("admin"));
