@@ -83,7 +83,7 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     const { mongooseQuery, paginationResult } = apiFeatures.paginate(
       documents.length
     );
-    const data = await apiFeatures.mongooseQuery;
+    const data = await mongooseQuery;
     res.status(200).json({ results: documents.length, paginationResult, data });
   });
 
