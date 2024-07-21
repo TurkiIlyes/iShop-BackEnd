@@ -9,7 +9,7 @@ export interface ProductType extends Document {
   price: number;
   discount: number;
   priceAfterDiscount?: number;
-  imageCover: string;
+  imageCover?: string;
   images?: string[];
   sku?: string;
   quantity: number;
@@ -54,10 +54,7 @@ const productSchema = new Schema<ProductType>(
     priceAfterDiscount: {
       type: Number,
     },
-    imageCover: {
-      type: String,
-      required: [true, "Product Image cover is required"],
-    },
+    imageCover: String,
     images: [String],
     sku: String,
     quantity: {
