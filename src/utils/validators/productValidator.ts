@@ -50,8 +50,7 @@ export const createProductValidator = [
     .isNumeric()
     .withMessage("Product discount must be a number"),
   body("imageCover")
-    .notEmpty()
-    .withMessage("Product imageCover is required")
+    .optional()
     .isString()
     .withMessage("Product imageCover must be a string"),
   body("images")
@@ -210,8 +209,7 @@ export const updateProductValidator = [
     .isNumeric()
     .withMessage("Product discount must be a number"),
   body("imageCover")
-    .notEmpty()
-    .withMessage("Product imageCover is required")
+    .optional()
     .isString()
     .withMessage("Product imageCover must be a string"),
   body("images")
