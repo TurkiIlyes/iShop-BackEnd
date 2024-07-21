@@ -70,11 +70,11 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     // }
     const documentsCounts = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
-      .paginate(documentsCounts)
       .filter()
       .search(Model.modelName)
       .limitFields()
-      .sort();
+      .sort()
+      .paginate(documentsCounts);
 
     const { mongooseQuery, paginationResult } = apiFeatures;
     const documents = await mongooseQuery;
