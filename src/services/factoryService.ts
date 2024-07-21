@@ -75,9 +75,12 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
       .limitFields()
       .sort();
 
-    const { mongooseQuery } = apiFeatures;
-    const documents = await mongooseQuery;
-    const { paginationResult } = await apiFeatures.paginate(documents.length);
+    // const { mongooseQuery } = apiFeatures;
+    // const documents = await mongooseQuery;
+    // const { paginationResult } = apiFeatures.paginate(documents.length);
+
+    const documents = await apiFeatures.mongooseQuery;
+    const { paginationResult } = apiFeatures.paginate(documents.length);
 
     res
       .status(200)
