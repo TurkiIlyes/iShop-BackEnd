@@ -68,16 +68,16 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     // if (req.filterObj) {
     //   filter = req.filterObj;
     // }
-    const documentsCounts = await Model.countDocuments();
+    // const documentsCounts = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
       .filter()
       .search(Model.modelName)
       .limitFields()
-      .sort()
-      .paginate(documentsCounts);
+      .sort();
 
-    const { mongooseQuery, paginationResult } = apiFeatures;
+    const { mongooseQuery } = apiFeatures;
     const documents = await mongooseQuery;
+    const { paginationResult } = await apiFeatures.paginate(documents.length);
 
     res
       .status(200)
