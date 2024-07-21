@@ -68,23 +68,27 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     // if (req.filterObj) {
     //   filter = req.filterObj;
     // }
-    // const documentsCounts = await Model.countDocuments();
+
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
       .filter()
       .search(Model.modelName)
       .limitFields()
       .sort();
 
-    // const { mongooseQuery } = apiFeatures;
-    // const documents = await mongooseQuery;
-    // const { paginationResult } = apiFeatures.paginate(documents.length);
+    // Count documents after filter and search
+    const filteredDocumentsQuery = apiFeatures.mongooseQuery.clone();
+    const documentsCount = await filteredDocumentsQuery.countDocuments();
+
+    // Apply pagination after count
+    apiFeatures.paginate(documentsCount);
 
     const documents = await apiFeatures.mongooseQuery;
-    const { mongooseQuery, paginationResult } = apiFeatures.paginate(
-      documents.length
-    );
-    const data = await mongooseQuery;
-    res.status(200).json({ results: documents.length, paginationResult, data });
+
+    res.status(200).json({
+      results: documents.length,
+      paginationResult: apiFeatures.paginationResult,
+      data: documents,
+    });
   });
 
 // Get a single document by ID
