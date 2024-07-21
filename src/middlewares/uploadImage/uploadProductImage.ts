@@ -30,8 +30,9 @@ export const resizeProductImages = asyncHandler(
           req.body.images.push(result.secure_url);
         })
       );
+      req.body.images = req.body.images.join(",");
     }
-    req.body.images = req.body.images.join(',');
+
     next();
   }
 );
