@@ -80,11 +80,11 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     // const { paginationResult } = apiFeatures.paginate(documents.length);
 
     const documents = await apiFeatures.mongooseQuery;
-    const { paginationResult } = apiFeatures.paginate(documents.length);
-
-    res
-      .status(200)
-      .json({ results: documents.length, paginationResult, data: documents });
+    const { mongooseQuery, paginationResult } = apiFeatures.paginate(
+      documents.length
+    );
+    const data = await apiFeatures.mongooseQuery;
+    res.status(200).json({ results: documents.length, paginationResult, data });
   });
 
 // Get a single document by ID
