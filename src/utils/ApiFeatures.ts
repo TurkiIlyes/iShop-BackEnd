@@ -5,7 +5,7 @@ interface QueryString {
   sort?: string;
   limit?: string;
   fields?: string;
-  keyword?: string;
+  search?: string;
 }
 
 class ApiFeatures<T extends Document> {
@@ -23,7 +23,7 @@ class ApiFeatures<T extends Document> {
 
   filter(): this {
     const queryStringObj = { ...this.queryString };
-    const excludesFields = ["page", "sort", "limit", "fields"];
+    const excludesFields = ["page", "sort", "limit", "fields", "search"];
     excludesFields.forEach((field) => delete queryStringObj[field]);
     let queryStr = JSON.stringify(queryStringObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
@@ -54,19 +54,19 @@ class ApiFeatures<T extends Document> {
   }
 
   search(modelName: string): this {
-    if (this.queryString.keyword) {
+    if (this.queryString.search) {
       let query = {};
       if (modelName === "Product") {
         query = {
           $or: [
-            { title: { $regex: this.queryString.keyword, $options: "i" } },
+            { title: { $regex: this.queryString.search, $options: "i" } },
             {
-              description: { $regex: this.queryString.keyword, $options: "i" },
+              description: { $regex: this.queryString.search, $options: "i" },
             },
           ],
         };
       } else {
-        query = { name: { $regex: this.queryString.keyword, $options: "i" } };
+        query = { name: { $regex: this.queryString.search, $options: "i" } };
       }
 
       this.mongooseQuery = this.mongooseQuery.find(query);
