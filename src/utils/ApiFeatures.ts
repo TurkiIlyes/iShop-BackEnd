@@ -59,7 +59,7 @@ class ApiFeatures<T extends Document> {
     console.log(modelName);
     if (this.queryString.search) {
       let query = {};
-      if (modelName === "Product") {
+      if (modelName === "product") {
         query = {
           $or: [
             { title: { $regex: this.queryString.search, $options: "i" } },
