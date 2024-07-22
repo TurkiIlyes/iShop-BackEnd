@@ -56,6 +56,7 @@ class ApiFeatures<T extends Document> {
   search(modelName: string): this {
     console.log("search");
     console.log(this.queryString.search);
+    console.log(modelName);
     if (this.queryString.search) {
       let query = {};
       if (modelName === "Product") {
