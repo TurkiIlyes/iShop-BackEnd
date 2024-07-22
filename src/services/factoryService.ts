@@ -70,6 +70,7 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
     // }
 
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
+
       .filter()
       .search(Model.modelName)
       .limitFields()

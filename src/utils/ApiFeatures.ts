@@ -54,6 +54,8 @@ class ApiFeatures<T extends Document> {
   }
 
   search(modelName: string): this {
+    console.log("search");
+    console.log(this.queryString.search);
     if (this.queryString.search) {
       let query = {};
       if (modelName === "Product") {
@@ -68,7 +70,8 @@ class ApiFeatures<T extends Document> {
       } else {
         query = { name: { $regex: this.queryString.search, $options: "i" } };
       }
-
+      console.log(query);
+      console.log(this.mongooseQuery.find(query));
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     return this;
