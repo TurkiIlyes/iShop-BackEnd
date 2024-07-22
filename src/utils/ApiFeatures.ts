@@ -72,7 +72,7 @@ class ApiFeatures<T extends Document> {
         query = { name: { $regex: this.queryString.search, $options: "i" } };
       }
       console.log(query);
-      console.log(this.mongooseQuery.find(query));
+      // console.log(this.mongooseQuery.find(query));
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     return this;
