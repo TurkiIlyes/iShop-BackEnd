@@ -69,7 +69,7 @@ class ApiFeatures<T extends Document> {
       //     ],
       //   };
       // } else {
-      query = { name: { $regex: this.queryString.search, $options: "i" } };
+      query = { title: { $regex: this.queryString.search, $options: "i" } };
       // }
       console.log(query);
       // console.log(this.mongooseQuery.find(query));
