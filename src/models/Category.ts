@@ -41,6 +41,6 @@ categorySchema.pre("save", function (next) {
   next();
 });
 
-const Category = mongoose.model<CategoryType>("category", categorySchema);
+const Category = mongoose.model<CategoryType>("Category", categorySchema);
 
 export default Category;

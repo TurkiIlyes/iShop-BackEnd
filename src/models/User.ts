@@ -16,7 +16,7 @@ export interface UserType extends Document {
     postalCode?: string;
   };
   wishList?: mongoose.Types.ObjectId[];
-  basketList?: mongoose.Types.ObjectId[];
+  basket: mongoose.Types.ObjectId;
   role: "user" | "admin";
   status: "active" | "inactive";
   signUpCode?: string;
@@ -63,12 +63,10 @@ const userSchema = new Schema<UserType>(
         ref: "Product",
       },
     ],
-    basketList: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Product",
-      },
-    ],
+    basket: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Basket"
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -110,6 +108,6 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-const UserModel = mongoose.model<UserType>("user", userSchema);
+const UserModel = mongoose.model<UserType>("User", userSchema);
 
 export default UserModel;

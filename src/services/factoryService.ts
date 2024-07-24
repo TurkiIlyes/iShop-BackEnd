@@ -96,8 +96,12 @@ export const getAll = <T extends Document>(Model: MongooseModel<T>) =>
 export const getOne = <T extends Document>(Model: MongooseModel<T>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const document = await Model.findById(id);
-
+    let document;
+    if (Model.modelName === "User") {
+      document = await Model.findById(id).populate("Basket");
+    } else {
+      document = await Model.findById(id);
+    }
     if (!document) {
       return next(new ApiError(`No ${Model.modelName} for this id ${id}`, 404));
     }

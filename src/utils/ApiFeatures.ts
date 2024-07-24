@@ -59,7 +59,7 @@ class ApiFeatures<T extends Document> {
     console.log(modelName);
     if (this.queryString.search) {
       let query = {};
-      if (modelName === "product") {
+      if (modelName === "Product") {
         query = {
           $or: [
             {

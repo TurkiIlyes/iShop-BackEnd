@@ -116,6 +116,6 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-const ProductModel = mongoose.model<ProductType>("product", productSchema);
+const ProductModel = mongoose.model<ProductType>("Product", productSchema);
 
 export default ProductModel;
