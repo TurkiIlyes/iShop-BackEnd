@@ -76,6 +76,8 @@ export const updateBasket = asyncHandler(
 export const removeItemFromBasket = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id, itemId } = req.params;
+    console.log(id);
+    console.log(itemId);
     const basket = await Basket.findOne({ userId: id });
 
     if (!basket) {
