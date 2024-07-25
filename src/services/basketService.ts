@@ -41,8 +41,13 @@ export const addItemToBasket = asyncHandler(
         items: [newItemData],
       });
     } else {
-      basket.items.push(newItemData);
-      await basket.save();
+      const existingItem = basket.items.find(
+        (e) => e.productId.toString() === productId
+      );
+      if (!existingItem) {
+        basket.items.push(newItemData);
+        await basket.save();
+      }
     }
 
     res.status(201).json({ message: "Item added to basket", data: basket });
