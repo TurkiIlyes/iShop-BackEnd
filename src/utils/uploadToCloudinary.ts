@@ -35,7 +35,7 @@ const uploadToCloudinary = async (
 export const customCloudinary = (img: Buffer) => {
   return uploadToCloudinary(img, {
     folder: "products",
-    format: "jpeg",
+    format: "png",
     transformation: [
       { width: 2000, height: 1333, crop: "limit", quality: "auto" },
     ],
