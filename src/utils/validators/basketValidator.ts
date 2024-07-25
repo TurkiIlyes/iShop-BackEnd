@@ -25,9 +25,9 @@ export const updateBasketValidator = [
   validatorMiddleware,
 ];
 
-
 export const removeItemValidator = [
-  paramsSanitizer("itemId"),
+  paramsSanitizer("id", "itemId"),
+  param("id").isMongoId().withMessage("Invalid user ID format"),
   param("itemId").isMongoId().withMessage("Invalid item ID format"),
   validatorMiddleware,
 ];
