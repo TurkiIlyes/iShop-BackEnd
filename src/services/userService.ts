@@ -46,7 +46,7 @@ export const getUsers = factory.getAll<UserType>(User);
 // @desc    Update a specific user by ID
 // @route   PUT /users/:id
 // @access  Private/Admin
-export const updateUser = factory.updateOne<UserType>(User);
+export const updateUser = factory.updateOne<UserType>(User,["address.details", "address.governorate", "address.city", "address.postalCode"]);
 
 // @desc    Delete a specific user by ID
 // @route   DELETE /users/:id

@@ -21,7 +21,10 @@ export const createOne = <T extends Document>(Model: MongooseModel<T>) =>
   });
 
 // Update an existing document by ID
-export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
+export const updateOne = <T extends Document>(
+  Model: MongooseModel<T>,
+  addressFields: string[] = []
+) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     let { id } = req.params;
     // if (!id) {
@@ -30,15 +33,29 @@ export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
     const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
     console.log(req.body);
     console.log(parsedArr);
-    const { "address.details": addressDetails, ...rest } = req.body;
+
+    // Extract address fields if provided
+    const addressData = addressFields.reduce((acc, field) => {
+      const value = req.body[field];
+      if (value) {
+        acc[field] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
     const notEmptyData = extractNonEmptyFields<T>(
-      { ...rest, ...parsedArr },
+      { ...req.body, ...parsedArr },
       Model
     );
     console.log(notEmptyData);
     const document = await Model.findByIdAndUpdate(
       id,
-      { $set: { ...notEmptyData, "address.details": addressDetails } },
+      {
+        $set: {
+          ...notEmptyData,
+          ...addressData,
+        },
+      },
       {
         new: true,
       }
