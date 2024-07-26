@@ -1,27 +1,148 @@
-import factory from "./factoryService";
-import Order, { OrderType } from "../models/Order";
+import asyncHandler from "express-async-handler";
+import Order, { OrderType, OrderItemType } from "../models/Order";
+import Product from "../models/Product";
+import { Request, Response, NextFunction } from "express";
+import ApiError from "../utils/ApiError";
 
-// @desc    Get list of orders
-// @route   GET /api/v1/orders
-// @access  Private
-export const getOrders = factory.getAll<OrderType>(Order);
+// Get all orders for admin
+export const getOrders = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orders = await Order.find().populate("items.productId");
+    res.status(200).json({ data: orders });
+  }
+);
 
-// @desc    Get specific order by id
-// @route   GET /api/v1/orders/:id
-// @access  Private
-export const getOrder = factory.getOne<OrderType>(Order);
+// Get a specific order by ID for admin or the logged-in user
+export const getOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId).populate("items.productId");
+    if (!order) {
+      return next(new ApiError("Order not found", 404));
+    }
+    res.status(200).json({ data: order });
+  }
+);
 
-// @desc    Create order
-// @route   POST /api/v1/orders
-// @access  Private
-export const createOrder = factory.createOne<OrderType>(Order);
+// Create a new order for a logged-in user
+export const createOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const { items, paymentType } = req.body;
 
-// @desc    Update specific order
-// @route   PUT /api/v1/orders/:id
-// @access  Private
-export const updateOrder = factory.updateOne<OrderType>(Order);
+    const newOrder = await Order.create({
+      userId,
+      items,
+      paymentType,
+    });
 
-// @desc    Delete specific order
-// @route   DELETE /api/v1/orders/:id
-// @access  Private
-export const deleteOrder = factory.deleteOne<OrderType>(Order);
+    res.status(201).json({ message: "Order created", data: newOrder });
+  }
+);
+
+// Update an order (admin only)
+export const updateOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const updates = req.body;
+
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, updates, {
+      new: true,
+    }).populate("items.productId");
+
+    if (!updatedOrder) {
+      return next(new ApiError("Order not found", 404));
+    }
+    res.status(200).json({ message: "Order updated", data: updatedOrder });
+  }
+);
+
+// Delete an order (admin only)
+export const deleteOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const deletedOrder = await Order.findByIdAndDelete(orderId);
+
+    if (!deletedOrder) {
+      return next(new ApiError("Order not found", 404));
+    }
+    res.status(200).json({ message: "Order deleted" });
+  }
+);
+
+// Cancel an order for a logged-in user
+export const cancelOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const order = await Order.findOne({ _id: orderId, userId: req.user._id });
+
+    if (!order) {
+      return next(new ApiError("Order not found or unauthorized", 404));
+    }
+
+    order.status = "cancelled";
+    await order.save();
+
+    res.status(200).json({ message: "Order cancelled", data: order });
+  }
+);
+
+// Get all orders for the logged-in user
+export const getLoggedUserOrders = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orders = await Order.find({ userId: req.user._id }).populate(
+      "items.productId"
+    );
+    res.status(200).json({ data: orders });
+  }
+);
+
+// Get a specific order for the logged-in user
+export const getLoggedUserOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const order = await Order.findOne({
+      _id: orderId,
+      userId: req.user._id,
+    }).populate("items.productId");
+
+    if (!order) {
+      return next(new ApiError("Order not found or unauthorized", 404));
+    }
+
+    res.status(200).json({ data: order });
+  }
+);
+
+// Create a new order for a logged-in user
+export const createLoggedUserOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { items, paymentType } = req.body;
+    const userId = req.user._id;
+
+    const newOrder = await Order.create({
+      userId,
+      items,
+      paymentType,
+    });
+
+    res.status(201).json({ message: "Order created", data: newOrder });
+  }
+);
+
+// Cancel an order for a logged-in user
+export const cancelLoggedUserOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId } = req.params;
+    const order = await Order.findOne({ _id: orderId, userId: req.user._id });
+
+    if (!order) {
+      return next(new ApiError("Order not found or unauthorized", 404));
+    }
+
+    order.status = "cancelled";
+    await order.save();
+
+    res.status(200).json({ message: "Order cancelled", data: order });
+  }
+);

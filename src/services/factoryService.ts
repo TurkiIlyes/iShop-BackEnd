@@ -30,14 +30,15 @@ export const updateOne = <T extends Document>(Model: MongooseModel<T>) =>
     const parsedArr = parseArrays(req, ["colors", "sizes", "images"]);
     console.log(req.body);
     console.log(parsedArr);
+    const { "address.details": addressDetails, ...rest } = req.body;
     const notEmptyData = extractNonEmptyFields<T>(
-      { ...req.body, ...parsedArr },
+      { ...rest, ...parsedArr },
       Model
     );
     console.log(notEmptyData);
     const document = await Model.findByIdAndUpdate(
       id,
-      { $set: notEmptyData },
+      { $set: { ...notEmptyData, "address.details": addressDetails } },
       {
         new: true,
       }
