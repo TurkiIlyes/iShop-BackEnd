@@ -36,10 +36,8 @@ export const updateOne = <T extends Document>(
 
     // Extract address fields if provided
     const addressData = addressFields.reduce((acc, field) => {
-      const value = req.body[field];
-      if (value) {
-        acc[field] = value;
-      }
+      acc[field] = req.body[field];
+
       return acc;
     }, {} as Record<string, any>);
 
