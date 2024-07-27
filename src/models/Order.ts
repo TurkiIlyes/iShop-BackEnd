@@ -5,6 +5,13 @@ export interface OrderItemType extends BasketItemType {
   productName: string;
 }
 
+export interface AddressType {
+  details: string;
+  governorate: string;
+  city: string;
+  postalCode: string;
+}
+
 export interface OrderType extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
@@ -13,6 +20,7 @@ export interface OrderType extends Document {
   status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
   paymentStatus: "unpaid" | "paid";
   paymentType: "onDelivery" | "creditCard" | "paypal";
+  address: AddressType;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,10 +29,6 @@ const orderItemSchema = new Schema<OrderItemType>({
   productId: {
     type: mongoose.Schema.ObjectId,
     ref: "Product",
-    required: true,
-  },
-  productName: {
-    type: String,
     required: true,
   },
   quantity: {
@@ -71,6 +75,24 @@ const orderSchema = new Schema<OrderType>(
       type: String,
       enum: ["onDelivery", "creditCard", "paypal"],
       required: true,
+    },
+    address: {
+      details: {
+        type: String,
+        required: true,
+      },
+      governorate: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+      },
     },
   },
   { timestamps: true }

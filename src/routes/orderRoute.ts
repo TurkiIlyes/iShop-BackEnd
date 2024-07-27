@@ -27,7 +27,7 @@ router.use(protect);
 router
   .route("/")
   .get(extractUserId, getLoggedUserOrders)
-  .post(extractUserId, createOrderValidator, createLoggedUserOrder);
+  .post(createOrderValidator, createLoggedUserOrder);
 
 router
   .route("/:orderId")

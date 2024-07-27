@@ -1,5 +1,6 @@
 import { body, param } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
+import { bodySanitizer } from "../../middlewares/sanitizer";
 
 export const getOrderValidator = [
   param("orderId").isMongoId().withMessage("Invalid order ID format"),
@@ -7,12 +8,12 @@ export const getOrderValidator = [
 ];
 
 export const createOrderValidator = [
-  body("items")
-    .isArray({ min: 1 })
-    .withMessage("Items are required and must be an array"),
+  bodySanitizer(
+    "paymentType",
+  ),
   body("paymentType")
-    .isString()
-    .withMessage("Payment type is required and must be a string"),
+    .isIn(["onDelivery", "creditCard", "paypal"])
+    .withMessage("Invalid payment type"),
   validatorMiddleware,
 ];
 

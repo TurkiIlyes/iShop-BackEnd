@@ -3,6 +3,7 @@ import Order, { OrderType, OrderItemType } from "../models/Order";
 import Product from "../models/Product";
 import { Request, Response, NextFunction } from "express";
 import ApiError from "../utils/ApiError";
+import Basket from "../models/Basket";
 
 // Get all orders for admin
 export const getOrders = asyncHandler(
@@ -117,14 +118,38 @@ export const getLoggedUserOrder = asyncHandler(
 // Create a new order for a logged-in user
 export const createLoggedUserOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { items, paymentType } = req.body;
-    const userId = req.user._id;
+    const { _id: userId, address } = req.user;
+    const { paymentType } = req.body;
+
+    if (
+      !address?.details ||
+      !address?.governorate ||
+      !address?.city ||
+      !address?.postalCode
+    ) {
+      return next(
+        new ApiError("Please fill all the required address fields", 400)
+      );
+    }
+
+    const basket = await Basket.findOne({ userId });
+
+    if (!basket) {
+      return next(new ApiError("Basket not found", 404));
+    }
+    if (basket.items.length === 0) {
+      return next(new ApiError("Basket is empty", 400));
+    }
 
     const newOrder = await Order.create({
       userId,
-      items,
+      items: basket.items,
       paymentType,
+      totalPrice: basket.totalPrice,
+      address,
     });
+
+    await Basket.findOneAndUpdate({ userId }, { items: [] });
 
     res.status(201).json({ message: "Order created", data: newOrder });
   }
