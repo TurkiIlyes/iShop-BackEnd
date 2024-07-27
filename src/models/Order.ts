@@ -1,10 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { BasketItemType } from "./Basket";
 
-export interface OrderItemType extends BasketItemType {
-  productName: string;
-}
-
 export interface AddressType {
   details: string;
   governorate: string;
@@ -15,7 +11,7 @@ export interface AddressType {
 export interface OrderType extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
-  items: OrderItemType[];
+  items: BasketItemType[];
   totalPrice: number;
   status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
   paymentStatus: "unpaid" | "paid";
@@ -25,7 +21,7 @@ export interface OrderType extends Document {
   updatedAt: Date;
 }
 
-const orderItemSchema = new Schema<OrderItemType>({
+const orderItemSchema = new Schema<BasketItemType>({
   productId: {
     type: mongoose.Schema.ObjectId,
     ref: "Product",

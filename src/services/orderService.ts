@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Order, { OrderType, OrderItemType } from "../models/Order";
-import Product from "../models/Product";
+import Order from "../models/Order";
 import { Request, Response, NextFunction } from "express";
 import ApiError from "../utils/ApiError";
 import Basket from "../models/Basket";
@@ -91,9 +90,9 @@ export const cancelOrder = asyncHandler(
 // Get all orders for the logged-in user
 export const getLoggedUserOrders = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const orders = await Order.find({ userId: req.user._id }).populate(
-      "items.productId"
-    );
+    const userId = req.user._id;
+    const orders = await Order.find({ userId });
+
     res.status(200).json({ data: orders });
   }
 );
