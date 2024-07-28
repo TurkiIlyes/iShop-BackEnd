@@ -8,9 +8,7 @@ export const getOrderValidator = [
 ];
 
 export const createOrderValidator = [
-  bodySanitizer(
-    "paymentType",
-  ),
+  bodySanitizer("paymentType"),
   body("paymentType")
     .isIn(["onDelivery", "creditCard", "paypal"])
     .withMessage("Invalid payment type"),
@@ -20,10 +18,5 @@ export const createOrderValidator = [
 export const updateOrderValidator = [
   param("orderId").isMongoId().withMessage("Invalid order ID format"),
   body("status").optional().isString().withMessage("Status must be a string"),
-  validatorMiddleware,
-];
-
-export const deleteOrderValidator = [
-  param("orderId").isMongoId().withMessage("Invalid order ID format"),
   validatorMiddleware,
 ];

@@ -3,45 +3,38 @@ import {
   getOrderValidator,
   createOrderValidator,
   updateOrderValidator,
-  deleteOrderValidator,
 } from "../utils/validators/orderValidator";
 import {
   getOrders,
   getOrder,
-  createOrder,
   updateOrder,
-  deleteOrder,
-  cancelOrder,
   getLoggedUserOrders,
   getLoggedUserOrder,
   createLoggedUserOrder,
   cancelLoggedUserOrder,
 } from "../services/orderService";
 import { protect, allowedTo } from "../services/authService";
-import extractUserId from "../middlewares/extractUserId";
 
 const router = express.Router();
 
 router.use(protect);
 
 router
-  .route("/")
+  .route("/user")
   .get(getLoggedUserOrders)
   .post(createOrderValidator, createLoggedUserOrder);
 
 router
-  .route("/:orderId")
-  .get(extractUserId, getOrderValidator, getLoggedUserOrder)
-  .put(extractUserId, cancelLoggedUserOrder);
+  .route("/user/:id")
+  .get(getOrderValidator, getLoggedUserOrder)
+  .put(cancelLoggedUserOrder);
 
-router.route("/").get(allowedTo("admin"), getOrders);
+router.route("/admin").get(allowedTo("admin"), getOrders);
 
 router
-  .route("/:orderId")
+  .route("/admin/:id")
   .get(allowedTo("admin"), getOrderValidator, getOrder)
 
-  .put(allowedTo("admin"), updateOrderValidator, updateOrder)
-
-  .delete(allowedTo("admin"), deleteOrderValidator, deleteOrder);
+  .put(allowedTo("admin"), updateOrderValidator, updateOrder);
 
 export default router;
