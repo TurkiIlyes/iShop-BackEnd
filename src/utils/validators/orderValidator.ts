@@ -3,7 +3,7 @@ import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import { bodySanitizer } from "../../middlewares/sanitizer";
 
 export const getOrderValidator = [
-  param("orderId").isMongoId().withMessage("Invalid order ID format"),
+  param("id").isMongoId().withMessage("Invalid order ID format"),
   validatorMiddleware,
 ];
 
@@ -16,7 +16,7 @@ export const createOrderValidator = [
 ];
 
 export const updateOrderValidator = [
-  param("orderId").isMongoId().withMessage("Invalid order ID format"),
+  param("id").isMongoId().withMessage("Invalid order ID format"),
   body("status").optional().isString().withMessage("Status must be a string"),
   validatorMiddleware,
 ];
