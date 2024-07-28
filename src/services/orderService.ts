@@ -54,8 +54,8 @@ export const createLoggedUserOrder = asyncHandler(
 export const cancelLoggedUserOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user._id;
-    const { orderId } = req.params;
-    const order = await Order.findOne({ _id: orderId, userId });
+    const { id } = req.params;
+    const order = await Order.findOne({ _id: id, userId });
 
     if (!order) {
       return next(new ApiError("Order not found or unauthorized", 404));
@@ -70,9 +70,9 @@ export const cancelLoggedUserOrder = asyncHandler(
 export const getLoggedUserOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user._id;
-    const { orderId } = req.params;
+    const { id } = req.params;
     const order = await Order.findOne({
-      _id: orderId,
+      _id: id,
       userId,
     }).populate("items.productId");
 
