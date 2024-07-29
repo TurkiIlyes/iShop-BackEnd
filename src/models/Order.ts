@@ -11,6 +11,7 @@ export interface AddressType {
 export interface OrderType extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
+  email: string;
   items: BasketItemType[];
   totalPrice: number;
   status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
@@ -49,6 +50,10 @@ const orderSchema = new Schema<OrderType>(
     userId: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
+      required: true,
+    },
+    email: {
+      type: String,
       required: true,
     },
     items: [orderItemSchema],

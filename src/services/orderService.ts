@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import ApiError from "../utils/ApiError";
 import Basket from "../models/Basket";
 import factory from "./factoryService";
+import User from "../models/User";
 
 //  (admin only)
 export const updateOrder = factory.updateOne<OrderType>(Order);
@@ -37,9 +38,15 @@ export const createLoggedUserOrder = asyncHandler(
     if (basket.items.length === 0) {
       return next(new ApiError("Basket is empty", 400));
     }
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return next(new ApiError("User not found", 404));
+    }
 
     const newOrder = await Order.create({
       userId,
+      email: user.email,
       items: basket.items,
       paymentType,
       totalPrice: basket.totalPrice,
