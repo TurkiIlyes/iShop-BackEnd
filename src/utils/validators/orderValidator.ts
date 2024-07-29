@@ -16,7 +16,16 @@ export const createOrderValidator = [
 ];
 
 export const updateOrderValidator = [
-  bodySanitizer("email", "phone", "status", "paymentStatus"),
+  bodySanitizer(
+    "email",
+    "phone",
+    "status",
+    "paymentStatus",
+    "address.details",
+    "address.governorate",
+    "address.city",
+    "address.postalCode"
+  ),
   param("id").isMongoId().withMessage("Invalid order ID format"),
   body("status").optional().isString().withMessage("Status must be a string"),
 
