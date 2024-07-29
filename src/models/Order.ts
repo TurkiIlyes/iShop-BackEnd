@@ -12,6 +12,7 @@ export interface OrderType extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   email: string;
+  phone?: string;
   items: BasketItemType[];
   totalPrice: number;
   status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
@@ -55,6 +56,9 @@ const orderSchema = new Schema<OrderType>(
     email: {
       type: String,
       required: true,
+    },
+    phone: {
+      type: String,
     },
     items: [orderItemSchema],
     totalPrice: {

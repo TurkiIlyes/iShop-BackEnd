@@ -47,6 +47,7 @@ export const createLoggedUserOrder = asyncHandler(
     const newOrder = await Order.create({
       userId,
       email: user.email,
+      phone: user.phone,
       items: basket.items,
       paymentType,
       totalPrice: basket.totalPrice,
