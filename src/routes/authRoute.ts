@@ -20,6 +20,12 @@ import {
   verifySignUpValidator,
   providerSignInValidator,
 } from "../utils/validators/authValidator";
+
+import {
+  uploadUserImage,
+  resizeUserImage,
+} from "../middlewares/uploadImage/uploadUserImage";
+
 // Rate limiter middleware to prevent brute-force attacks
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -35,14 +41,26 @@ router.use(limiter);
  * @desc    Register a new user
  * @access  Public
  */
-router.post("/sign-up", signUpValidator, signUp);
+router.post(
+  "/sign-up",
+  uploadUserImage,
+  resizeUserImage,
+  signUpValidator,
+  signUp
+);
 
 /**
  * @route   POST /verify-sign-up-code
  * @desc    Verify user sign-up code
  * @access  Public
  */
-router.post("/verify-sign-up-code", verifySignUpValidator, verifySignUp);
+router.post(
+  "/verify-sign-up-code",
+  uploadUserImage,
+  resizeUserImage,
+  verifySignUpValidator,
+  verifySignUp
+);
 
 /**
  * @route   POST /signin
@@ -56,7 +74,13 @@ router.post("/sign-in", signInValidator, signIn);
  * @desc    Initiate password reset
  * @access  Public
  */
-router.post("/forget-password", forgetPasswordValidator, forgetPassword);
+router.post(
+  "/forget-password",
+  uploadUserImage,
+  resizeUserImage,
+  forgetPasswordValidator,
+  forgetPassword
+);
 
 /**
  * @route   POST /verify-pw-reset-code
@@ -65,6 +89,8 @@ router.post("/forget-password", forgetPasswordValidator, forgetPassword);
  */
 router.post(
   "/verify-pw-reset-code",
+  uploadUserImage,
+  resizeUserImage,
   verifyPwResetCodeValidator,
   verifyPwResetCode
 );
@@ -74,6 +100,12 @@ router.post(
  * @desc    Reset user password
  * @access  Public
  */
-router.put("/reset-password", resetPasswordValidator, resetPassword);
+router.put(
+  "/reset-password",
+  uploadUserImage,
+  resizeUserImage,
+  resetPasswordValidator,
+  resetPassword
+);
 
 export default router;

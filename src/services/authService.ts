@@ -57,7 +57,13 @@ export const signUp = asyncHandler(
       return next(new ApiError("There is an error in sending email -_-", 500));
     }
 
-    res.status(201).json({ data: { email: user.email } });
+    res
+      .status(201)
+      .json({
+        status: "success",
+        message: "user created",
+        data: { email: user.email },
+      });
   }
 );
 
@@ -79,10 +85,10 @@ export const verifySignUp = asyncHandler(
     user.status = "active";
     await user.save();
 
-    const token = generateToken(user._id);
-    const userObject = user.toObject();
-    delete userObject.password;
-    res.status(201).json({ data: userObject, token });
+    // const token = generateToken(user._id);
+    // const userObject = user.toObject();
+    // delete userObject.password;
+    res.status(201).json({ status: "success", message: "user verified" });
   }
 );
 
@@ -220,10 +226,10 @@ export const resetPassword = asyncHandler(
     user.pwResetExpires = undefined;
     user.pwResetVerified = undefined;
     await user.save();
-    const token = generateToken(user._id);
-    const userObject = user.toObject();
-    delete userObject.password;
-    res.status(200).json({ data: userObject, token });
+    // const token = generateToken(user._id);
+    // const userObject = user.toObject();
+    // delete userObject.password;
+    res.status(200).json({ status: "success", message: "password reset" });
   }
 );
 
