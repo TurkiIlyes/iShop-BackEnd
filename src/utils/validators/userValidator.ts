@@ -140,7 +140,7 @@ export const createUserValidator = [
     "email",
     "phone",
     "password",
-    "confirmPassword",
+    "passwordConfirm",
     "status",
     "address",
     "image"
@@ -245,7 +245,7 @@ export const updateUserValidator = [
 ];
 export const updatePasswordValidator = [
   paramsSanitizer("id"),
-  bodySanitizer("password", "confirmPassword"),
+  bodySanitizer("password", "passwordConfirm"),
   param("id").isMongoId().withMessage("Invalid User id format"),
   body("password")
     .notEmpty()

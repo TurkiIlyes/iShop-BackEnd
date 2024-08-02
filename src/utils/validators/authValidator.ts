@@ -8,7 +8,7 @@ export const signUpValidator = [
     "email",
     "phone",
     "password",
-    "confirmPassword",
+    "passwordConfirm",
     "address"
   ),
   body("name")
@@ -39,12 +39,12 @@ export const signUpValidator = [
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
     )
     .custom((password, { req }) => {
-      if (password !== req.body.confirmPassword) {
+      if (password !== req.body.passwordConfirm) {
         throw new Error("Password Confirmation incorrect");
       }
       return true;
     }),
-  body("confirmPassword")
+  body("passwordConfirm")
     .notEmpty()
     .withMessage("password confirmation required"),
   body("address")
