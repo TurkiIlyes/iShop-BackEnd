@@ -57,13 +57,11 @@ export const signUp = asyncHandler(
       return next(new ApiError("There is an error in sending email -_-", 500));
     }
 
-    res
-      .status(201)
-      .json({
-        status: "success",
-        message: "user created",
-        data: { email: user.email },
-      });
+    res.status(201).json({
+      status: "success",
+      message: "user created",
+      data: { email: user.email },
+    });
   }
 );
 
@@ -154,6 +152,9 @@ export const forgetPassword = asyncHandler(
     const user = await User.findOne({ email });
     if (!user || user.status === "inactive") {
       return next(new ApiError("There is no user with this email", 400));
+    }
+    if (user.provider && user.providerId) {
+      return next(new ApiError("this is a provider account", 400));
     }
     const resetCode = Math.floor(Math.random() * 900000 + 100000).toString();
 
