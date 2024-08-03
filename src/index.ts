@@ -12,6 +12,7 @@ import authRoute from "./routes/authRoute";
 import userRoute from "./routes/userRoute";
 import basketRoute from "./routes/basketRoute";
 import orderRoute from "./routes/orderRoute";
+import wishListRoute from "./routes/wishListRoute";
 import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 
@@ -33,6 +34,7 @@ app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/basket", basketRoute);
 app.use("/orders", orderRoute);
+app.use("/wishlist", wishListRoute);
 app.use("/categories", categoryRoute);
 app.use("/products", productRoute);
 
