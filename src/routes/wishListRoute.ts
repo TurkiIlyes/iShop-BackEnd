@@ -21,7 +21,7 @@ router.get("/me", extractUserId, getLoggedUserWishList);
 
 // Add product to wishlist
 router.post(
-  "/:productId",
+  "/me/:productId",
   extractUserId,
   addToWishListValidator,
   addToWishList
@@ -29,13 +29,13 @@ router.post(
 
 // Remove product from wishlist
 router.delete(
-  "/:productId",
+  "/me/:productId",
   extractUserId,
   removeFromWishListValidator,
   removeFromWishList
 );
 
 // clear wishlist
-router.delete("/clear", extractUserId, clearWishList);
+router.delete("/me", extractUserId, clearWishList);
 
 export default router;
