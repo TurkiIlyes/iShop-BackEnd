@@ -8,6 +8,7 @@ import {
   getUser,
   getUsers,
   updateLoggedUserPassword,
+  deleteLoggedUser,
 } from "../services/userService";
 import {
   createUserValidator,
@@ -68,7 +69,7 @@ router
    * @desc    Delete the logged-in user
    * @access  Private
    */
-  .delete(extractUserId, deleteLoggedUserValidator, deleteUser);
+  .delete(extractUserId, deleteLoggedUserValidator, deleteLoggedUser);
 
 /**
  * @route   PUT /update-password

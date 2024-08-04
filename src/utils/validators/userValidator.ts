@@ -113,18 +113,17 @@ export const deleteLoggedUserValidator = [
     )
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
-    )
-    .custom(async (password, { req }) => {
-      const user = await User.findById(req.params.id);
-      if (!user.provider && !user.providerId) {
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-          throw new Error("Password Confirmation incorrect");
-        }
-      }
+    ),
+  // .custom(async (password, { req }) => {
+  //   const user = await User.findById(req.params.id);
+  //   if (!user.provider && !user.providerId) {
+  //     if (!user || !(await bcrypt.compare(password, user.password))) {
+  //       throw new Error("Password Confirmation incorrect");
+  //     }
+  //   }
 
-      return true;
-    }),
-
+  //   return true;
+  // })
   validatorMiddleware,
 ];
 export const getLoggedUserValidator = [
