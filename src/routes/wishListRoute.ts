@@ -20,7 +20,12 @@ router.use(protect); // Protect wishlist routes
 router.get("/me", extractUserId, getLoggedUserWishList);
 
 // Add product to wishlist
-router.put("/:productId", extractUserId, addToWishListValidator, addToWishList);
+router.post(
+  "/:productId",
+  extractUserId,
+  addToWishListValidator,
+  addToWishList
+);
 
 // Remove product from wishlist
 router.delete(
