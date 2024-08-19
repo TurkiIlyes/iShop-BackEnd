@@ -16,6 +16,8 @@ import wishListRoute from "./routes/wishListRoute";
 import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 
+import { Request, Response, NextFunction } from "express";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
@@ -38,7 +40,7 @@ app.use("/wishlist", wishListRoute);
 app.use("/categories", categoryRoute);
 app.use("/products", productRoute);
 
-app.use("*", (req, res, next) => {
+app.use("*", (req: Request, res: Response, next: NextFunction) => {
   next(new ApiError("Can't find this route ", 404));
 });
 
